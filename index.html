@@ -107,13 +107,13 @@
       <div class="flex items-center space-x-4">
         <span class="font-semibold text-[#1A1815]">今日要闻要目</span>
         <span class="hidden md:inline text-[#8C867D]">/</span>
-        <span class="hidden md:inline">Runway 实时交互世界模型 GWM Worlds 2 发布</span>
+        <span class="hidden md:inline" id="ticker-lead">LLaDA-Image / LLaDA-Image-Turbo 开源发布</span>
         <span class="hidden md:inline text-[#8C867D]">/</span>
-        <span class="hidden md:inline">OpenAI GPT-6 Astra 自主电脑操作突破</span>
+        <span class="hidden md:inline" id="ticker-sub">Runway GWM Worlds 2 实时交互世界模型</span>
       </div>
       <div class="flex items-center space-x-2 mt-2 sm:mt-0 font-mono-ui">
         <span class="w-2 h-2 rounded-full bg-[#8E3B2B] inline-block animate-pulse"></span>
-        <span>视频媒体直显：<span class="text-[#1A1815] font-bold">已就绪</span></span>
+        <span>媒体支持：<span class="text-[#1A1815] font-bold">实测视频 & 架构图</span></span>
       </div>
     </div>
 
@@ -140,8 +140,8 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-2 font-sans-ui text-xs">
-        <button onclick="filterArticles('all')" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold">全部通报</button>
-        <button onclick="filterArticles('video')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">🎬 附带实测视频</button>
+        <button onclick="filterArticles('all', this)" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold">全部通报</button>
+        <button onclick="filterArticles('video', this)" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">🎬 附带实测视频</button>
       </div>
     </section>
 
@@ -221,8 +221,18 @@
   <script>
     const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxTL7O1fKtVVYKRaMACo2prGJroCmLN2CHHDfzHUchpJG1V5k-qfUwinIrZ7WpGzW36/exec";
 
-    // 本地预置备用模型库（包含真实抓取的 Runway 官方实测视频）
+    // 本地预置备用模型库（包含实时全模态前沿模型）
     let currentModels = [
+      {
+        releaseTime: "2026-09-04 18:00:00",
+        name: "LLaDA-Image / LLaDA-Image-Turbo",
+        org: "蚂蚁集团开源实验室 InclusionAI (Ant Group)",
+        features: "【6B DiT 统一图像生成与指令编辑全开源基座】\n1. 单一 6B DiT 架构统一两大任务：从零训练的 60 亿参数 Diffusion Transformer，单一 Checkpoint 原生统一了高质量文本生图（Text-to-Image）与基于参考图的指令引导编辑（Instruction-guided Editing），彻底摒弃外挂编辑网络的割裂做法。\n2. 顶尖中英双语文字排版与海报生成：针对中文文字生成与商业排版畸变等行业痛点重点攻坚，在高质量写实图像、创意海报、商业广告及中英混杂字体渲染上表现出极高的文字连贯性与自然光影合成能力。\n3. Twin-DMD 四步极速蒸馏：提供 50 步高保真 Base 模型，同时发布基于 Twin-DMD 蒸馏的 Turbo 模型，仅需 2~4 步采样即可完成高质量生成与编辑；原生提供 BF16 与 FP8 权重，极低显存门槛，完美适配消费级显卡与 ComfyUI 生态。\n4. 100% 全开源训练配方：采用无参数 RMSNorm 与 Muon 优化器，建立纯图像预训练视觉先验后再引入文本联合训练，模型权重与推理代码全栈 Apache-2.0 开源。",
+        benchmarks: "Qwen-Image-Bench 英文: 53.53 | 中文: 53.38 | Turbo 步数: 4 步 | Base 步数: 50 步 | 参数: 6B | 开源协议: Apache-2.0",
+        officialUrl: "https://github.com/inclusionAI/LLaDA-Image",
+        coverUrl: "https://cdn-thumbnails.huggingface.co/social-thumbnails/inclusionAI.png",
+        videoUrl: ""
+      },
       {
         releaseTime: "2026-09-04 15:00",
         name: "Runway GWM Worlds 2",
@@ -244,16 +254,6 @@
         videoUrl: ""
       },
       {
-        releaseTime: "2026-09-03 07:00",
-        name: "Microsoft MAI-Transcribe-2",
-        org: "Microsoft AI",
-        features: "【颠覆企业级性价比的语音多模态大模型】工业级 60 语种高精感知与混杂语码识别，标配声纹分离、字词级毫秒时间戳，吞吐速度达 300x Real-time。",
-        benchmarks: "FLEURS 跨 60 语种词错误率 (WER): 仅 5.2% (全球第一) | 吞吐: 300x 实时处理速率",
-        officialUrl: "https://venturebeat.com/infrastructure/microsoft-ais-mai-transcribe-2-undercuts-openai-google-and-elevenlabs-on-price-and-speed",
-        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/3njXWwdtKNGR2ej5bHdbB2/4422b6b8afba67920f5aa8a86b110635/ChatGPT_Image_Sep_3__2026__11_37_04_AM.png",
-        videoUrl: ""
-      },
-      {
         releaseTime: "2026-09-03 09:00",
         name: "MBZUAI K2 Horizon (0.9B-375B)",
         org: "MBZUAI IFM",
@@ -262,10 +262,46 @@
         officialUrl: "https://recipes.vllm.ai/IFM/K2-Horizon-3.7B",
         coverUrl: "https://imagedelivery.net/XaQqGmJkNE7OzU_SNXiB6g/247walls-custom-mql6jmxk-0-cahb/public",
         videoUrl: ""
+      },
+      {
+        releaseTime: "2026-09-03 07:00",
+        name: "Microsoft MAI-Transcribe-2",
+        org: "Microsoft AI",
+        features: "【颠覆企业级性价比的语音多模态大模型】工业级 60 语种高精感知与混杂语码识别，标配声纹分离、字词级毫秒时间戳，吞吐速度达 300x Real-time。",
+        benchmarks: "FLEURS 跨 60 语种词错误率 (WER): 仅 5.2% (全球第一) | 吞吐: 300x 实时处理速率",
+        officialUrl: "https://venturebeat.com/infrastructure/microsoft-ais-mai-transcribe-2-undercuts-openai-google-and-elevenlabs-on-price-and-speed",
+        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/3njXWwdtKNGR2ej5bHdbB2/4422b6b8afba67920f5aa8a86b110635/ChatGPT_Image_Sep_3__2026__11_37_04_AM.png",
+        videoUrl: ""
       }
     ];
 
     let currentFilter = 'all';
+
+    // 严谨时间解析：支持 YYYY-MM-DD HH:mm:ss、YYYY-MM-DD HH:mm、ISO 格式及斜杠格式
+    function parseReleaseTime(timeStr) {
+      if (!timeStr) return 0;
+      if (timeStr instanceof Date) return timeStr.getTime();
+      const str = String(timeStr).trim();
+      const slashNormalized = str.replace(/-/g, '/');
+      const t = Date.parse(slashNormalized);
+      if (!isNaN(t)) return t;
+      const m = str.match(/\d+/g);
+      if (m && m.length >= 3) {
+        const year = parseInt(m[0], 10);
+        const month = parseInt(m[1], 10) - 1;
+        const day = parseInt(m[2], 10);
+        const hour = m[3] ? parseInt(m[3], 10) : 0;
+        const min = m[4] ? parseInt(m[4], 10) : 0;
+        const sec = m[5] ? parseInt(m[5], 10) : 0;
+        return new Date(year, month, day, hour, min, sec).getTime();
+      }
+      return 0;
+    }
+
+    // 核心时间降序排序（确保最新发布的模型永远位于最首位）
+    function sortModelsByReleaseTime(models) {
+      return models.sort((a, b) => parseReleaseTime(b.releaseTime) - parseReleaseTime(a.releaseTime));
+    }
 
     async function loadModelsFromGoogleSheet() {
       const statusEl = document.getElementById('api-status');
@@ -275,6 +311,7 @@
         
         if (result && result.data && result.data.length > 0) {
           currentModels = result.data;
+          sortModelsByReleaseTime(currentModels);
           statusEl.innerText = `● Google 表格已联通 (${currentModels.length} 条实测通报)`;
           statusEl.className = "text-emerald-700 font-bold";
         }
@@ -289,14 +326,41 @@
 
     function isDirectVideo(url) {
       if (!url) return false;
-      return url.includes('.mp4') || url.includes('.webm') || url.includes('cloudfront.net') && url.includes('video');
+      return url.includes('.mp4') || url.includes('.webm') || (url.includes('cloudfront.net') && url.includes('video'));
     }
 
     function renderPage() {
       if (currentModels.length === 0) return;
 
-      const lead = currentModels[0];
-      const rest = currentModels.slice(1);
+      // 核心排序：始终严格按照发布时间从最新到最旧排列，最新发布者荣登头条社论
+      sortModelsByReleaseTime(currentModels);
+
+      // 动态更新报纸报头今日要闻
+      const tickerLead = document.getElementById('ticker-lead');
+      const tickerSub = document.getElementById('ticker-sub');
+      if (tickerLead && currentModels[0]) {
+        tickerLead.innerText = `${currentModels[0].name} 最新发布`;
+      }
+      if (tickerSub && currentModels[1]) {
+        tickerSub.innerText = `${currentModels[1].name} 紧随其后`;
+      }
+
+      let displayList = currentModels;
+      if (currentFilter === 'video') {
+        displayList = currentModels.filter(item => isDirectVideo(item.videoUrl));
+      }
+
+      if (displayList.length === 0) {
+        document.getElementById('articles-container').innerHTML = `
+          <div class="col-span-full py-12 text-center text-[#8C867D] font-sans-ui text-xs">
+            暂无附带实测视频的通报条目。
+          </div>
+        `;
+        return;
+      }
+
+      const lead = displayList[0];
+      const rest = displayList.slice(1);
 
       // 头版头条渲染
       const leadSection = document.getElementById('lead-editorial-section');
@@ -304,7 +368,10 @@
 
       leadSection.innerHTML = `
         <div class="flex items-center justify-between border-b border-[#D5CEBF] pb-2 mb-4 font-sans-ui text-xs">
-          <span class="bg-[#8E3B2B] text-white px-2 py-0.5 font-bold uppercase tracking-wider">本期特刊头条社论</span>
+          <div class="flex items-center space-x-2">
+            <span class="bg-[#8E3B2B] text-white px-2 py-0.5 font-bold uppercase tracking-wider">本期特刊头条社论</span>
+            <span class="bg-[#1A1815] text-[#F7F4EC] px-1.5 py-0.5 font-mono-ui font-semibold text-[10px]">LATEST RELEASE</span>
+          </div>
           <span class="font-mono-ui text-[#8C867D]">PUBLISHED // ${lead.releaseTime}</span>
         </div>
 
@@ -332,7 +399,7 @@
               </div>
             ` : (lead.coverUrl ? `
               <div class="mb-4 border border-[#D5CEBF] p-1 bg-white">
-                <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full h-64 object-cover filter grayscale hover:grayscale-0 transition-all duration-300" />
+                <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full max-h-[380px] object-contain bg-[#FAF7F0] filter grayscale hover:grayscale-0 transition-all duration-300" />
                 <div class="text-[11px] font-sans-ui text-[#8C867D] p-1 text-center">公报通报配图：${lead.name} 架构与实测档案</div>
               </div>
             ` : '')}
@@ -382,12 +449,7 @@
 
       // 渲染特刊矩阵
       const container = document.getElementById('articles-container');
-      const filtered = rest.filter(item => {
-        if (currentFilter === 'video') return isDirectVideo(item.videoUrl);
-        return true;
-      });
-
-      container.innerHTML = filtered.map((item, idx) => {
+      container.innerHTML = rest.map((item, idx) => {
         const hasVideo = isDirectVideo(item.videoUrl);
         return `
           <article class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 flex flex-col justify-between shadow-sm hover:border-[#1A1815] transition-colors">
@@ -435,12 +497,14 @@
       }).join('');
     }
 
-    function filterArticles(cat) {
+    function filterArticles(cat, btnEl) {
       currentFilter = cat;
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.className = 'filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]';
       });
-      event.target.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold';
+      if (btnEl) {
+        btnEl.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold';
+      }
       renderPage();
     }
 
