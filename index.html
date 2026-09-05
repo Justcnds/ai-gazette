@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>《前沿模型公报》 // THE FRONTIER MODEL GAZETTE</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 核心纸质报刊排版体系（严格遵循 frontend-design 规范） */
+    :root {
+      --paper-base: #F7F4EC;
+      --paper-card: #FFFDF9;
+      --ink-primary: #1A1815;
+      --ink-secondary: #5A554E;
+      --ink-faded: #8C867D;
+      --border-rule: #D5CEBF;
+      --border-dark: #1A1815;
+      --terracotta: #8E3B2B;
+    }
+
+    body {
+      background-color: var(--paper-base);
+      color: var(--ink-primary);
+      font-family: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* 现代无衬线辅助字体（用于标签、元信息与数据） */
+    .font-sans-ui {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+
+    /* 等宽字体（用于时间戳、跑分与参数编号） */
+    .font-mono-ui {
+      font-family: ui-monospace, "SF Mono", "Menlo", "Courier New", monospace;
+    }
+
+    /* 首字下沉（Drop Cap） */
+    .drop-cap::first-letter {
+      float: left;
+      font-size: 3.8rem;
+      line-height: 0.85;
+      padding-top: 4px;
+      padding-right: 10px;
+      padding-bottom: 2px;
+      font-weight: bold;
+      color: var(--terracotta);
+      font-family: Georgia, serif;
+    }
+
+    /* 报纸双横分割线 */
+    .double-rule {
+      border-top: 3px double var(--border-dark);
+      border-bottom: 1px solid var(--border-dark);
+      height: 6px;
+    }
+
+    /* 纸质轻微发丝细线 */
+    .hairline-rule {
+      border-color: var(--border-rule);
+    }
+
+    /* 报刊引语拉出样式（Pull Quote） */
+    .pull-quote {
+      border-top: 1px solid var(--border-dark);
+      border-bottom: 1px solid var(--border-dark);
+      padding: 1.25rem 0;
+      margin: 1.5rem 0;
+      font-style: italic;
+      font-size: 1.15rem;
+      line-height: 1.5;
+      text-align: center;
+      color: var(--terracotta);
+    }
+
+    /* 邮戳印章样式 */
+    .postal-stamp {
+      border: 2px dashed var(--terracotta);
+      color: var(--terracotta);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-[#8E3B2B] selection:text-white">
+
+  <!-- 顶部报刊元信息顶栏 -->
+  <div class="border-b border-[#D5CEBF] bg-[#F3EFE6] text-[#5A554E] font-sans-ui text-xs py-1.5 px-4">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+      <div class="flex items-center space-x-3">
+        <span class="font-bold text-[#1A1815]">第 142 期 · 晨报号</span>
+        <span class="text-[#8C867D]">|</span>
+        <span id="masthead-date">2026 年 9 月 5 日 · 星期六</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span>全自动巡检周期：<strong class="text-[#8E3B2B]">每小时整点</strong></span>
+        <span class="text-[#8C867D]">|</span>
+        <span>定级：公开刊印 · 免资订阅</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 经典大报头 (Masthead) -->
+  <header class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 pb-4 text-center w-full">
+    <div class="font-sans-ui text-xs tracking-[0.3em] uppercase text-[#8E3B2B] font-bold mb-1">
+      THE FRONTIER INTELLIGENCE OBSERVER
+    </div>
+    <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#1A1815] mb-2 font-serif">
+      前 沿 模 型 公 報
+    </h1>
+    <p class="font-sans-ui text-xs sm:text-sm text-[#5A554E] max-w-2xl mx-auto tracking-wide mb-6">
+      记录全球基础大语言模型演进轨迹 · 深度评测、架构规格与官方论文全景速览
+    </p>
+
+    <!-- 报头双层线 -->
+    <div class="double-rule my-4"></div>
+
+    <!-- 报头二级导航栏与电报状态 -->
+    <div class="flex flex-col sm:flex-row justify-between items-center text-xs font-sans-ui py-1 text-[#5A554E]">
+      <div class="flex items-center space-x-4">
+        <span class="font-semibold text-[#1A1815]">今日要闻要目</span>
+        <span class="hidden md:inline text-[#8C867D]">/</span>
+        <span class="hidden md:inline">强化学习长思维链涌现</span>
+        <span class="hidden md:inline text-[#8C867D]">/</span>
+        <span class="hidden md:inline">Anthropic 混合推理落地</span>
+      </div>
+      <div class="flex items-center space-x-2 mt-2 sm:mt-0 font-mono-ui">
+        <span class="w-2 h-2 rounded-full bg-[#8E3B2B] inline-block animate-pulse"></span>
+        <span>云端巡检电报机：<span class="text-[#1A1815] font-bold">已就绪</span></span>
+      </div>
+    </div>
+
+    <!-- 底部分割线 -->
+    <div class="border-b border-[#1A1815] mt-2 mb-8"></div>
+  </header>
+
+  <!-- 主体报纸内容 (Broadsheet Main Body) -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 flex-1 w-full">
+
+    <!-- 社论头条文章区 (Lead Editorial Article) -->
+    <article class="border-b-2 border-[#1A1815] pb-10 mb-12">
+      <!-- 栏目标题 -->
+      <div class="flex items-center justify-between border-b border-[#D5CEBF] pb-2 mb-4 font-sans-ui text-xs">
+        <span class="bg-[#8E3B2B] text-white px-2 py-0.5 font-bold uppercase tracking-wider">本期特刊头条社论</span>
+        <span class="font-mono-ui text-[#8C867D]">DISPATCH REF // 2025-RL-DEEPSEEK</span>
+      </div>
+
+      <!-- 特大头条标题 -->
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-[#1A1815] leading-tight mb-4">
+        纯强化学习的觉醒：开源推理引擎如何撼动闭源高墙
+      </h2>
+      <div class="font-sans-ui text-sm sm:text-base text-[#5A554E] italic mb-6 max-w-4xl">
+        从过度依赖海量人类监督数据（SFT），到机器在纯数学逻辑环境中自主反思——以 DeepSeek-R1 为代表的技术路线正在彻底重塑全球大模型的技术与商业版图。
+      </div>
+
+      <!-- 报纸经典两栏排版 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 text-justify">
+        
+        <!-- 左侧核心文稿 (8 Cols) -->
+        <div class="lg:col-span-8 text-sm sm:text-base leading-relaxed text-[#2A2723]">
+          <p class="drop-cap mb-4">
+            在过去数年中，大语言模型的进步几乎完全建立在对海量互联网语料的“暴力预训练”和人类反馈强化学习（RLHF）之上。然而，近期公布的 DeepSeek-R1 突破性地证明：即便不经过人类精心标注的大规模思维链样本诱导，仅凭借针对最终答案正确性的规则强化学习算法，模型自身就能涌现出极高水平的思维探索、回顾检验、甚至自我纠错能力。
+          </p>
+
+          <!-- 拉出金句 (Pull Quote) -->
+          <div class="pull-quote">
+            “智能的演进，正在从‘模仿人类的作答偏好’，转向‘在纯粹逻辑荒野中的自我叩问与求索’。”
+          </div>
+
+          <p class="mb-4">
+            这一范式转移的震撼之处在于成本的断崖式下降。研发团队向全球开源了包含 6710 亿总参数（每次激活约 370 亿参数）的完整 MoE 权重，并在 AIME 2024、MATH-500 等权威数理挑战中交出了与封闭顶级模型难分伯仲的成绩单。这标志着高阶逻辑推理不再是少数万亿市值巨头的私有垄断品。
+          </p>
+          <p>
+            与此同时，开源社区以极快的速度将其知识蒸馏至 1.5B、7B、14B 等小型密集模型中，使得普通开发者在一台配备消费级显卡的个人工作站上，即可拥有前代数百亿参数规模才能具备的代码攻坚能力。
+          </p>
+        </div>
+
+        <!-- 右侧边栏：核心数据与历史对比 (4 Cols) -->
+        <aside class="lg:col-span-4 border-l border-[#D5CEBF] pl-0 lg:pl-6 pt-4 lg:pt-0">
+          <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-5 shadow-sm">
+            <h3 class="font-sans-ui text-xs font-bold uppercase tracking-wider text-[#8E3B2B] mb-3 border-b border-[#D5CEBF] pb-2">
+              头条模型档案 // 规格总表
+            </h3>
+            
+            <dl class="space-y-3 font-sans-ui text-xs">
+              <div>
+                <dt class="text-[#8C867D]">模型全称</dt>
+                <dd class="font-serif font-bold text-sm text-[#1A1815]">DeepSeek-R1-Zero / R1</dd>
+              </div>
+              <div class="border-t border-[#EAE5D9] pt-2">
+                <dt class="text-[#8C867D]">总参数量 / 激活参数</dt>
+                <dd class="font-mono-ui font-semibold text-[#1A1815]">671B MoE / 37B 激活</dd>
+              </div>
+              <div class="border-t border-[#EAE5D9] pt-2">
+                <dt class="text-[#8C867D]">上下文窗口长度</dt>
+                <dd class="font-mono-ui font-semibold text-[#1A1815]">128,000 Tokens (128K)</dd>
+              </div>
+              <div class="border-t border-[#EAE5D9] pt-2">
+                <dt class="text-[#8C867D]">数学基准 (MATH-500)</dt>
+                <dd class="font-mono-ui font-bold text-sm text-[#8E3B2B]">97.3% 正确率</dd>
+              </div>
+              <div class="border-t border-[#EAE5D9] pt-2">
+                <dt class="text-[#8C867D]">数学竞赛 (AIME 2024)</dt>
+                <dd class="font-mono-ui font-bold text-sm text-[#8E3B2B]">79.8% (Pass@1)</dd>
+              </div>
+              <div class="border-t border-[#EAE5D9] pt-2">
+                <dt class="text-[#8C867D]">知识产权与开源授权</dt>
+                <dd class="font-sans-ui text-[#1A1815] font-semibold">MIT License（商用无限制）</dd>
+              </div>
+            </dl>
+
+            <div class="mt-5 pt-3 border-t border-[#D5CEBF]">
+              <a href="https://github.com/deepseek-ai/DeepSeek-R1" target="_blank" class="font-sans-ui text-xs font-bold text-[#8E3B2B] hover:underline flex items-center justify-between">
+                <span>查阅官方论文与开源仓库</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </article>
+
+    <!-- 栏目导航与检索控制台 (Section Filter Bar) -->
+    <section class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D5CEBF] pb-4">
+      <div>
+        <h3 class="font-serif text-2xl font-bold text-[#1A1815] tracking-tight">
+          公报收录库 · 最新通报矩阵
+        </h3>
+        <p class="font-sans-ui text-xs text-[#5A554E] mt-0.5">
+          每小时经由 Google Spark 抓取并核验的重点实验室最新权重与 API 发布
+        </p>
+      </div>
+
+      <!-- 交互式筛选 -->
+      <div class="flex flex-wrap items-center gap-2 font-sans-ui text-xs">
+        <button onclick="filterArticles('all')" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold">全部通报 (6)</button>
+        <button onclick="filterArticles('reasoning')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">推理模型</button>
+        <button onclick="filterArticles('multimodal')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">多模态</button>
+        <button onclick="filterArticles('open-source')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">开源矩阵</button>
+      </div>
+    </section>
+
+    <!-- 多栏报纸特刊卡片流 (Articles Grid) -->
+    <section id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      <!-- JS 动态渲染各篇文章 -->
+    </section>
+
+    <!-- 底部：公报订阅电报所 (Postal Dispatch Subscription Desk) -->
+    <section id="subscription-desk" class="border-t-2 border-[#1A1815] pt-12 pb-16">
+      <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-8 sm:p-10 max-w-3xl mx-auto relative shadow-sm">
+        
+        <!-- 右上角仿真邮戳 -->
+        <div class="absolute top-6 right-6 postal-stamp w-20 h-20 rounded-full flex flex-col items-center justify-center font-sans-ui text-[10px] uppercase font-bold transform rotate-12 pointer-events-none select-none">
+          <span>SPARK AI</span>
+          <span class="text-xs font-serif font-black">邮资已付</span>
+          <span class="font-mono-ui">2026.09</span>
+        </div>
+
+        <div class="font-sans-ui text-xs text-[#8E3B2B] font-bold uppercase tracking-widest mb-1">
+          OFFICIAL DISPATCH SERVICE
+        </div>
+        <h2 class="font-serif text-3xl font-bold text-[#1A1815] mb-3">
+          订阅《前沿模型公报》每日晨报速递
+        </h2>
+        <p class="text-sm text-[#5A554E] leading-relaxed mb-8 max-w-xl font-sans-ui">
+          当有全球重磅模型发布时，我们的后台巡检程序会将结构化评测报告、规格参数与官方链接直接投递至您的电子信箱。绝无商业推广，纯粹学术与工程简讯。
+        </p>
+
+        <!-- 订阅表单 -->
+        <div class="border-t border-b border-[#D5CEBF] py-4 my-4 font-sans-ui">
+          <div class="flex flex-col sm:flex-row items-center gap-3">
+            <div class="w-full sm:w-auto text-xs font-bold text-[#1A1815] whitespace-nowrap">
+              订报人电子邮箱：
+            </div>
+            <input 
+              type="email" 
+              id="sub-email-input"
+              placeholder="请输入您的邮箱 (例如: reader@qq.com)"
+              class="bg-white border border-[#D5CEBF] px-3 py-2 text-sm text-[#1A1815] focus:outline-none focus:border-[#1A1815] flex-1 w-full"
+            />
+            <button 
+              onclick="handleSubscribe()"
+              class="w-full sm:w-auto bg-[#8E3B2B] hover:bg-[#732F22] text-white font-sans-ui text-xs font-bold px-6 py-2.5 uppercase tracking-wider transition-colors active:scale-98">
+              签收并订阅
+            </button>
+          </div>
+        </div>
+
+        <!-- 状态反馈文案 -->
+        <div id="sub-feedback" class="font-sans-ui text-xs mt-3 hidden"></div>
+
+        <div class="flex justify-between items-center text-[11px] font-sans-ui text-[#8C867D] mt-6">
+          <span>* 随时可退订 · 数据仅在个人 Google 表格中流转</span>
+          <span>发行编号：ISSUE-AI-GAZETTE</span>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 极具报刊质感的页脚 -->
+  <footer class="border-t border-[#1A1815] bg-[#F1ECE1] py-8 text-center text-xs font-sans-ui text-[#5A554E]">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        《前沿模型公报》编印社 · 2026 版权所有 · 基于 Google Spark 与 Google Apps Script 自动化
+      </div>
+      <div class="flex items-center space-x-4">
+        <span>排版规范：Anthropic Frontend-Design</span>
+        <span>•</span>
+        <span>风格代码：04-Paper-Editorial</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 数据与交互逻辑 -->
+  <script>
+    const articlesData = [
+      {
+        id: "claude-3-7",
+        title: "Anthropic 推出首个混合推理旗舰 Claude 3.7 Sonnet",
+        date: "2025 年 2 月 24 日",
+        category: "reasoning",
+        categoryLabel: "推理特稿",
+        author: "Anthropic 实验室",
+        summary: "业界首创可由开发者在 API 层面自由调节思考时间（Thinking Budget）的统一架构。在不牺牲即时响应速度的前提下，将 SWE-bench 实际软件工程跑分推向 70.3% 的全新高地。",
+        specs: [
+          { label: "上下文长度", value: "200,000 Tokens" },
+          { label: "SWE-bench", value: "70.3% 解决率" },
+          { label: "TAU-bench 零售", value: "81.2% 精度" }
+        ],
+        url: "https://www.anthropic.com/news/claude-3-7-sonnet"
+      },
+      {
+        id: "gemini-2-flash-think",
+        title: "Google 发布 Gemini 2.0 Flash Thinking 实验内核",
+        date: "2025 年 1 月 15 日",
+        category: "multimodal",
+        categoryLabel: "多模态特稿",
+        author: "Google DeepMind",
+        summary: "将端到端原生多模态推理能力下放至极低延迟的 Flash 尺寸。支持百万长上下文中的图表、音频与多步推导链，兼具惊人的生成速度与深思熟虑的严密性。",
+        specs: [
+          { label: "上下文容量", value: "1,000,000 Tokens" },
+          { label: "HumanEval", value: "91.4% 代码分" },
+          { label: "MMMU 多模态", value: "73.2% 准确率" }
+        ],
+        url: "https://deepmind.google/technologies/gemini/"
+      },
+      {
+        id: "openai-o3-mini",
+        title: "OpenAI 发布 STEM 专业化推理模型 o3-mini",
+        date: "2025 年 1 月 31 日",
+        category: "reasoning",
+        categoryLabel: "理科攻坚",
+        author: "OpenAI",
+        summary: "为高难度数学竞赛、程序设计与科学攻坚打造的高性价比轻量模型。在 Codeforces 平台取得 2087 Elo 评级，同时大幅压低了企业大规模调用的推理开销。",
+        specs: [
+          { label: "竞赛 Elo", value: "2087 排名分" },
+          { label: "AIME 2024", value: "87.3% 正确率" },
+          { label: "推理成本", value: "较 o1 降低 60%+" }
+        ],
+        url: "https://openai.com/index/openai-o3-mini/"
+      },
+      {
+        id: "llama-3-3-70b",
+        title: "Meta 蒸馏开源旗舰 Llama 3.3 70B Instruct",
+        date: "2024 年 12 月 6 日",
+        category: "open-source",
+        categoryLabel: "开源专版",
+        author: "Meta AI",
+        summary: "Meta 研发团队运用前沿蒸馏与对齐技术，成功将 405B 超大型模型的核心能力压缩入 70B 尺寸，使得单机消费级多显卡设备亦能顺畅部署媲美顶尖闭源水准的系统。",
+        specs: [
+          { label: "模型尺寸", value: "Dense 70B 参数" },
+          { label: "MMLU 跑分", value: "88.6% 知识基准" },
+          { label: "开源协议", value: "Llama 3.3 社区许可" }
+        ],
+        url: "https://ai.meta.com/blog/meta-llama-3-3/"
+      },
+      {
+        id: "qwen-2-5-max",
+        title: "阿里云通义千问发布超大规模旗舰 Qwen 2.5 Max",
+        date: "2025 年 1 月 28 日",
+        category: "multimodal",
+        categoryLabel: "万亿基准",
+        author: "阿里云智能",
+        summary: "通义千问体系迄今最大规模的 Scale-up MoE 架构，在综合自然语言理解、高难度编程评测 LiveCodeBench 以及 Arena 盲测榜单中，全面跻身全球开源与商业化第一阵营。",
+        specs: [
+          { label: "MMLU-Pro", value: "85.2% 严格测试" },
+          { label: "Arena-Elo", value: "1310 综合天梯分" },
+          { label: "代码竞赛", value: "53.8% LiveCode" }
+        ],
+        url: "https://qwenlm.github.io/blog/qwen2.5-max/"
+      },
+      {
+        id: "deepseek-v3",
+        title: "DeepSeek-V3 首创高效 MoE 混合专家基础模型",
+        date: "2024 年 12 月 26 日",
+        category: "open-source",
+        categoryLabel: "架构突破",
+        author: "DeepSeek",
+        summary: "采用多头潜在注意力（MLA）与无辅助损失负载均衡机制，以仅 600 万美元极低训练成本达成行业顶尖表现，被业内誉为大模型工程架构的教科书级杰作。",
+        specs: [
+          { label: "训练总耗资", value: "约 600 万美元" },
+          { label: "参数体量", value: "671B (37B 激活)" },
+          { label: "生成吞吐", value: "提升 300% 以上" }
+        ],
+        url: "https://github.com/deepseek-ai/DeepSeek-V3"
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function renderArticles() {
+      const container = document.getElementById('articles-container');
+      const filtered = articlesData.filter(item => currentCategory === 'all' || item.category === currentCategory);
+
+      container.innerHTML = filtered.map(item => `
+        <article class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 flex flex-col justify-between shadow-sm hover:border-[#1A1815] transition-colors">
+          <div>
+            <!-- 栏目与时间 -->
+            <div class="flex justify-between items-center font-sans-ui text-xs text-[#8C867D] mb-3 border-b border-[#EAE5D9] pb-2">
+              <span class="text-[#8E3B2B] font-bold uppercase tracking-wider">${item.categoryLabel}</span>
+              <span class="font-mono-ui">${item.date}</span>
+            </div>
+
+            <!-- 标题 -->
+            <h4 class="font-serif text-xl font-bold text-[#1A1815] leading-snug mb-3">
+              ${item.title}
+            </h4>
+
+            <div class="font-sans-ui text-xs text-[#5A554E] mb-3">
+              发报机构：<span class="text-[#1A1815] font-semibold">${item.author}</span>
+            </div>
+
+            <!-- 正文简介 -->
+            <p class="text-xs text-[#4A453F] leading-relaxed mb-4">
+              ${item.summary}
+            </p>
+          </div>
+
+          <!-- 底部指标小报表 -->
+          <div class="border-t border-[#D5CEBF] pt-3 mt-2 font-sans-ui text-xs">
+            <div class="space-y-1 mb-3">
+              ${item.specs.map(spec => `
+                <div class="flex justify-between items-center text-[11px]">
+                  <span class="text-[#8C867D]">${spec.label}</span>
+                  <span class="font-mono-ui font-semibold text-[#1A1815]">${spec.value}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="pt-2 border-t border-[#EAE5D9] flex justify-between items-center">
+              <span class="font-mono-ui text-[10px] text-[#8C867D]">REF: ${item.id}</span>
+              <a href="${item.url}" target="_blank" class="text-[#8E3B2B] font-bold text-xs hover:underline flex items-center space-x-1">
+                <span>查阅论文通报</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function filterArticles(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.className = 'filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]';
+      });
+      event.target.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold';
+      renderArticles();
+    }
+
+    function handleSubscribe() {
+      const input = document.getElementById('sub-email-input');
+      const email = input.value.trim();
+      const feedback = document.getElementById('sub-feedback');
+
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        feedback.className = "font-sans-ui text-xs mt-3 text-[#8E3B2B] block";
+        feedback.innerText = "× 谨启：请输入规范之电子信箱地址，以确保电报正常送达。";
+        return;
+      }
+
+      feedback.className = "font-sans-ui text-xs mt-3 text-[#5A554E] block";
+      feedback.innerText = "⟳ 正在登记录入公报邮政名录簿...";
+
+      setTimeout(() => {
+        feedback.className = "font-sans-ui text-xs mt-3 text-[#1A1815] font-semibold block";
+        feedback.innerText = `✓ 订阅登记完成！信箱 [${email}] 已列入晨报速递清单。每当有新模型通报，将自动奉送。`;
+        input.value = "";
+      }, 700);
+    }
+
+    // 格式化当前日期为中文公历
+    const now = new Date();
+    const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    document.getElementById('masthead-date').innerText = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日 · ${days[now.getDay()]}`;
+
+    renderArticles();
+  </script>
+</body>
+</html>

@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>20 种前端设计风格全景展示馆 // DESIGN SYSTEM MUSEUM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 基础重置 */
+    * { box-sizing: border-box; }
+    
+    /* 动效与纹理辅助 */
+    .transition-stage {
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* CRT 扫描线纹理 */
+    .crt-scanlines {
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+      background-size: 100% 3px, 4px 100%;
+    }
+
+    /* 蓝图网格纹理 */
+    .blueprint-grid {
+      background-image: linear-gradient(to right, rgba(100, 255, 218, 0.15) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(100, 255, 218, 0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Win95 凹凸立体边框 */
+    .win95-outset {
+      border: 2px solid;
+      border-color: #FFFFFF #808080 #808080 #FFFFFF;
+    }
+    .win95-inset {
+      border: 2px solid;
+      border-color: #808080 #FFFFFF #FFFFFF #808080;
+    }
+
+    /* 粘土拟态阴影 */
+    .clay-card {
+      box-shadow: 12px 16px 28px rgba(130, 160, 210, 0.35),
+                  inset 4px 4px 8px rgba(255, 255, 255, 0.85),
+                  inset -4px -4px 8px rgba(130, 160, 210, 0.25);
+    }
+
+    /* 新拟物化 Soft-UI 阴影 */
+    .neumorphic-box {
+      background: #E0E5EC;
+      box-shadow: 8px 8px 16px #B8B9BE, -8px -8px 16px #FFFFFF;
+    }
+    .neumorphic-inset {
+      background: #E0E5EC;
+      box-shadow: inset 4px 4px 8px #B8B9BE, inset -4px -4px 8px #FFFFFF;
+    }
+
+    /* 极光毛玻璃背景 */
+    .aurora-bg {
+      background: linear-gradient(135deg, #1A1C29 0%, #162447 50%, #1F4068 100%);
+    }
+
+    /* 孟菲斯波普斑纹 */
+    .memphis-pattern {
+      background-color: #FFF9E6;
+      background-image: radial-gradient(#111111 1.5px, transparent 1.5px), radial-gradient(#FF5964 1.5px, #FFF9E6 1.5px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+  </style>
+</head>
+<body class="bg-[#0D0F12] text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <!-- 顶部主控台 -->
+  <header class="border-b border-slate-800 bg-[#12151B] px-6 py-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="inline-block w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse"></span>
+          <h1 class="font-mono text-sm font-bold tracking-wider uppercase text-emerald-400">
+            20 DESIGN ARCHETYPES MUSEUM
+          </h1>
+        </div>
+        <p class="text-xs text-slate-400 mt-0.5">
+          深度践行 frontend-design 规范：20 种风格各具独立色彩令牌、排版法则与灵魂质感
+        </p>
+      </div>
+
+      <!-- 视图切换 -->
+      <div class="flex items-center space-x-3 text-xs font-mono">
+        <span class="text-slate-400">选择风格查看:</span>
+        <select id="style-selector" onchange="switchStyle(this.value)" class="bg-[#1C212C] border border-slate-700 text-slate-200 px-3 py-1.5 rounded focus:outline-none focus:border-emerald-400">
+          <!-- 动态注入 20 种选项 -->
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主展示区域：左右分栏布局 -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- 左侧：20 种风格快速导航面板 (4 Cols) -->
+    <aside class="lg:col-span-4 bg-[#141821] border border-slate-800 rounded-xl p-4 h-[calc(100vh-140px)] overflow-y-auto flex flex-col">
+      <div class="font-mono text-xs text-slate-400 uppercase tracking-wider mb-3 px-2 flex justify-between items-center">
+        <span>全量风格清单 (20)</span>
+        <span class="text-[10px] text-emerald-400">点击即时切换</span>
+      </div>
+      <div class="space-y-1.5 flex-1" id="styles-nav-list">
+        <!-- JS 动态渲染 20 个导航按钮 -->
+      </div>
+    </aside>
+
+    <!-- 右侧：动态风格舞台 (8 Cols) -->
+    <section class="lg:col-span-8 flex flex-col space-y-6">
+      
+      <!-- 风格解构面板（展示该风格的色彩、字体、设计法则） -->
+      <div class="bg-[#141821] border border-slate-800 rounded-xl p-5">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center space-x-3">
+            <span id="current-id-badge" class="font-mono text-xs px-2 py-0.5 rounded bg-slate-800 text-emerald-400 font-semibold">01</span>
+            <h2 id="current-style-name" class="text-lg font-bold text-white">新野兽派 (Neo-Brutalism)</h2>
+          </div>
+          <span id="current-style-alias" class="font-mono text-xs text-slate-400">Gumroad / Pop Bold</span>
+        </div>
+        <p id="current-style-desc" class="text-xs text-slate-300 leading-relaxed mb-4">
+          高饱和度马卡龙底色、3px 粗黑边框、硬投影（无模糊）、趣味贴纸徽章，极具叛逆与活力。
+        </p>
+
+        <!-- 调色板预览条 -->
+        <div class="flex items-center space-x-2 text-xs font-mono">
+          <span class="text-slate-400">色彩令牌:</span>
+          <div id="palette-swatches" class="flex items-center space-x-1.5">
+            <!-- 动态注入颜色块 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心沙盒舞台：真正展示该风格写出来的完整组件 (Hero + Card + Form + Badge) -->
+      <div id="preview-stage-container" class="border border-slate-800 rounded-xl p-8 min-h-[520px] transition-stage flex flex-col justify-between overflow-hidden relative">
+        <!-- 动态生成具体风格的代码预览 -->
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800 py-4 bg-[#0D0F12] text-center text-xs text-slate-500 font-mono">
+    20 DISTINCT DESIGN ARCHETYPES // POWERED BY FRONTEND-DESIGN SKILL SPECIFICATIONS
+  </footer>
+
+  <!-- 20 种风格的核心定义数据库 -->
+  <script>
+    const stylesDatabase = [
+      {
+        id: "01",
+        key: "neo-brutalism",
+        name: "新野兽派 (Neo-Brutalism)",
+        alias: "Bold / Pop / High-Contrast",
+        desc: "采用明亮色块（明黄/樱花粉）、3px 极粗黑色轮廓线、无模糊硬投影（`box-shadow: 5px 5px 0 #000`），张扬且反叛。",
+        palette: ["#FFE500", "#FF6B6B", "#4D96FF", "#111111", "#FFFFFF"],
+        render: () => `
+          <div class="bg-[#FFF9E6] text-black p-8 rounded-none border-[3px] border-black shadow-[6px_6px_0px_0px_#000]">
+            <div class="inline-block bg-[#FF6B6B] text-black font-black text-xs px-3 py-1 border-[2px] border-black shadow-[2px_2px_0px_0px_#000] mb-4 uppercase tracking-wider">
+              ★ NEW MODEL TELEMETRY
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-3 uppercase">
+              DeepSeek-R1 // 纯强化学习突破
+            </h2>
+            <p class="font-bold text-sm text-gray-800 mb-6 leading-relaxed">
+              开源权重 671B MoE，零提示工程自主涌现长思维链。AIME 跑分 79.8%，重塑推理模型行业范式。
+            </p>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-white p-3 border-[2px] border-black shadow-[3px_3px_0px_0px_#000]">
+                <div class="text-xs font-black text-gray-500 uppercase">上下文容量</div>
+                <div class="text-xl font-black text-black">128K TOKENS</div>
+              </div>
+              <div class="bg-[#4D96FF] p-3 border-[2px] border-black shadow-[3px_3px_0px_0px_#000]">
+                <div class="text-xs font-black text-white uppercase">商用许可</div>
+                <div class="text-xl font-black text-white">MIT OPEN SOURCE</div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input type="text" placeholder="输入邮箱订阅情报" class="bg-white border-[2px] border-black px-4 py-2 font-bold text-sm focus:outline-none shadow-[2px_2px_0px_0px_#000] flex-1" />
+              <button class="bg-[#FFE500] hover:bg-yellow-400 text-black font-black text-sm px-6 py-2 border-[2px] border-black shadow-[3px_3px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+                立即订阅发布 &rarr;
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "02",
+        key: "linear-dark",
+        name: "现代暗黑线性工程风 (Linear Dark)",
+        alias: "Vercel / Supabase / Cyber-Engineering",
+        desc: "极深石墨黑背景、1px 细发丝冷灰边框、微妙局部光晕、荧光青色重点点缀，冷峻克制。",
+        palette: ["#08090C", "#12151C", "#232836", "#00F2A5", "#F0F3F8"],
+        render: () => `
+          <div class="bg-[#0A0D14] text-[#E6ECF5] p-8 rounded-xl border border-[#232836] relative overflow-hidden font-sans">
+            <div class="absolute -right-16 -top-16 w-44 h-44 bg-[#00F2A5]/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex items-center space-x-2 font-mono text-xs text-[#00F2A5] mb-3">
+              <span class="w-2 h-2 rounded-full bg-[#00F2A5]"></span>
+              <span>TELEMETRY RECORD // REASONING</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-semibold text-white tracking-tight mb-2">
+              Claude 3.7 Sonnet (Hybrid Architecture)
+            </h2>
+            <p class="text-xs text-[#8A98AF] leading-relaxed mb-6 max-w-xl">
+              Anthropic 首创的可变思考时间模型，可在极低延迟即时模式与高精度数学/代码深思模式间任意滑动调节。
+            </p>
+            <div class="grid grid-cols-3 gap-3 font-mono text-xs mb-6 border-y border-[#232836] py-3">
+              <div><span class="text-gray-500 block text-[10px]">SWE-BENCH</span><span class="text-white font-semibold">70.3%</span></div>
+              <div><span class="text-gray-500 block text-[10px]">CONTEXT</span><span class="text-white font-semibold">200K</span></div>
+              <div><span class="text-gray-500 block text-[10px]">THINKING BUDGET</span><span class="text-[#00F2A5] font-semibold">DYNAMIC</span></div>
+            </div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="name@domain.com" class="bg-[#121622] border border-[#232836] px-3 py-2 rounded text-xs text-white font-mono focus:outline-none focus:border-[#00F2A5] flex-1" />
+              <button class="bg-[#00F2A5] hover:bg-[#00F2A5]/90 text-black font-mono text-xs font-semibold px-4 py-2 rounded transition-colors">
+                订阅同步
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "03",
+        key: "swiss-bauhaus",
+        name: "瑞士国际主义与包豪斯 (Swiss Style)",
+        alias: "Grid / International Typographic / Rational",
+        desc: "严谨非对称网格、巨幅黑白粗体排版、克制的国际红（#E60000）色块、无多余圆角与阴影，极致理性。",
+        palette: ["#FFFFFF", "#111111", "#E60000", "#EAEAEA", "#888888"],
+        render: () => `
+          <div class="bg-white text-black p-8 rounded-none border-t-8 border-[#E60000] font-sans">
+            <div class="flex justify-between items-start border-b border-black pb-4 mb-6">
+              <span class="font-bold text-xs tracking-widest uppercase">SECTION 04 / RESEARCH DISPATCH</span>
+              <span class="font-bold text-xs">2026.09.05</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-baseline mb-8">
+              <div class="md:col-span-8">
+                <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tighter leading-none mb-3">
+                  FRONTIER MODEL MATRIX.
+                </h2>
+                <p class="text-sm text-gray-700 max-w-md font-normal leading-relaxed">
+                  OpenAI o3-mini 与竞赛级数学推理系统的突破：从盲目扩大预训练参数，转向强化学习测试时算力（Test-Time Compute）优化。
+                </p>
+              </div>
+              <div class="md:col-span-4 border-l border-black pl-4">
+                <div class="text-6xl font-black text-[#E60000] tracking-tighter">87.3%</div>
+                <div class="text-xs font-bold uppercase tracking-wider text-black mt-1">AIME 2024 BENCHMARK</div>
+              </div>
+            </div>
+            <div class="flex border-t border-b border-black py-3 items-center justify-between">
+              <span class="font-bold text-xs uppercase tracking-wider">SUBSCRIBE DISPATCH</span>
+              <div class="flex items-center space-x-2">
+                <input type="email" placeholder="EMAIL ADDRESS" class="border border-black px-3 py-1 text-xs font-bold focus:outline-none uppercase" />
+                <button class="bg-black text-white px-4 py-1 text-xs font-bold uppercase hover:bg-[#E60000] transition-colors">SUBMIT &rarr;</button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "04",
+        key: "paper-editorial",
+        name: "纸质报刊杂志社论风 (Paper Editorial)",
+        alias: "Literary / Newsprint / Heritage",
+        desc: "象牙米黄纸质底色（#F6F3EB）、经典衬线字体（Georgia/Garamond）、双色报刊发丝线分栏、浓郁书卷气息。",
+        palette: ["#F6F3EB", "#1C1814", "#8A4B38", "#D8D0C2", "#FAF8F5"],
+        render: () => `
+          <div class="bg-[#F6F3EB] text-[#1C1814] p-8 rounded-none border border-[#D8D0C2] font-serif shadow-sm">
+            <div class="text-center border-b-2 border-[#1C1814] pb-3 mb-6">
+              <div class="text-xs tracking-[0.25em] uppercase text-[#8A4B38] font-sans font-semibold mb-1">The Artificial Intelligence Gazette</div>
+              <h2 class="text-3xl sm:text-4xl font-normal italic tracking-tight">On the Emergence of Open Reasoning Engines</h2>
+              <div class="text-[11px] text-gray-600 mt-2 font-sans">ISSUE NO. 142 // SEPTEMBER 2026 // DISPATCH RECORD</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed mb-6">
+              <p class="first-letter:text-4xl first-letter:float-left first-letter:mr-2 first-letter:font-bold first-letter:text-[#8A4B38]">
+                Recent evaluations of distributed reinforcement learning have demonstrated that reasoning behavior can naturally emerge without exhaustive human supervision. The paradigm shifts from imitating human answers to autonomous self-reflection.
+              </p>
+              <div class="border-l border-[#D8D0C2] pl-4 font-sans text-xs">
+                <h4 class="font-bold text-[#8A4B38] uppercase tracking-wider mb-2">Editor's Summary</h4>
+                <ul class="space-y-1.5 text-gray-700">
+                  <li>— Zero-shot mathematical reasoning leaps forward</li>
+                  <li>— Open weights democratize frontier research</li>
+                  <li>— Inference cost collapses by an order of magnitude</li>
+                </ul>
+              </div>
+            </div>
+            <div class="border-t border-[#D8D0C2] pt-4 flex justify-between items-center font-sans text-xs">
+              <span class="italic text-gray-600 font-serif">Subscribe to the weekly print edition:</span>
+              <div class="flex space-x-2">
+                <input type="email" placeholder="your@email.com" class="bg-white border border-[#D8D0C2] px-3 py-1 text-xs focus:outline-none" />
+                <button class="bg-[#1C1814] text-white px-4 py-1 text-xs hover:bg-[#8A4B38] transition-colors">Subscribe</button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "05",
+        key: "apple-minimal",
+        name: "苹果 / 硅谷纯白极简 (Apple Minimalist)",
+        alias: "Cupertino / Clean Slate / Precision",
+        desc: "通透纯净白底、细腻亚克力磨砂、微弱柔和弥散阴影、大圆角与克制的金属深灰排版，极致纯粹。",
+        palette: ["#F5F5F7", "#FFFFFF", "#1D1D1F", "#86868B", "#0071E3"],
+        render: () => `
+          <div class="bg-[#FFFFFF] text-[#1D1D1F] p-8 rounded-2xl border border-black/[0.04] shadow-[0_12px_40px_rgba(0,0,0,0.06)] font-sans">
+            <span class="text-xs font-semibold tracking-wider text-[#0071E3] uppercase mb-2 block">Pro Innovation</span>
+            <h2 class="text-3xl font-semibold tracking-tight text-[#1D1D1F] mb-3">
+              Gemini 2.0 Flash Thinking.
+            </h2>
+            <p class="text-sm text-[#86868B] leading-relaxed mb-6 max-w-lg font-normal">
+              端到端多模态推理链。将数十秒复杂的代码推理与图表反思压缩至转瞬之间。不仅更快，更有深度。
+            </p>
+            <div class="grid grid-cols-2 gap-4 bg-[#F5F5F7] p-4 rounded-xl mb-6">
+              <div>
+                <div class="text-[11px] text-[#86868B] font-medium">Context Window</div>
+                <div class="text-2xl font-semibold text-[#1D1D1F]">1,000,000</div>
+                <div class="text-[10px] text-[#86868B]">Tokens natively processed</div>
+              </div>
+              <div>
+                <div class="text-[11px] text-[#86868B] font-medium">Latency</div>
+                <div class="text-2xl font-semibold text-[#0071E3]">&lt; 1.2s</div>
+                <div class="text-[10px] text-[#86868B]">First reasoning token</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between">
+              <button class="bg-[#0071E3] hover:bg-[#0077ED] text-white text-xs font-medium px-5 py-2 rounded-full transition-all active:scale-95 shadow-sm">
+                探索评测报告
+              </button>
+              <a href="#" class="text-xs text-[#0071E3] hover:underline flex items-center space-x-1 font-medium">
+                <span>加入技术订阅通知</span>
+                <span>&rarr;</span>
+              </a>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "06",
+        key: "cyberpunk",
+        name: "赛博朋克霓虹街头 (Cyberpunk 2077)",
+        alias: "High-Tech Low-Life / Neon Glitch",
+        desc: "极黑与深紫底色、高饱和电光荧黄（#FFE600）与烈焰洋红、倾斜裁切角（Clip-path）、HUD 准星线。",
+        palette: ["#05050A", "#FFE600", "#FF0055", "#00F0FF", "#181528"],
+        render: () => `
+          <div class="bg-[#0A0914] text-white p-8 rounded-none border-2 border-[#00F0FF] relative shadow-[0_0_20px_rgba(0,240,255,0.25)]" style="clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));">
+            <div class="flex justify-between items-center font-mono text-xs text-[#FFE600] mb-4">
+              <span>// PROTOCOL: NEURAL_WARFARE</span>
+              <span class="bg-[#FF0055] text-black px-2 py-0.5 font-bold uppercase">OVERCLOCK 100%</span>
+            </div>
+            <h2 class="text-3xl font-black italic tracking-wide text-white mb-2 uppercase">
+              QWEN 2.5 MAX // CYBER_MATRIX
+            </h2>
+            <p class="text-xs text-[#00F0FF] font-mono leading-relaxed mb-6">
+              SCALE-UP MOE 架构解锁全模态实时解析。全球基准跑分榜跃升第一梯队，中文深度语义与逻辑推理完全释放。
+            </p>
+            <div class="grid grid-cols-3 gap-2 font-mono text-xs mb-6 text-center">
+              <div class="bg-[#181528] p-2 border border-[#FF0055]"><span class="block text-[10px] text-gray-400">MMLU-PRO</span><strong class="text-[#FFE600] text-sm">85.2%</strong></div>
+              <div class="bg-[#181528] p-2 border border-[#00F0FF]"><span class="block text-[10px] text-gray-400">LIVECODE</span><strong class="text-[#00F0FF] text-sm">53.8%</strong></div>
+              <div class="bg-[#181528] p-2 border border-[#FFE600]"><span class="block text-[10px] text-gray-400">ELO_RATING</span><strong class="text-[#FF0055] text-sm">1310</strong></div>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" placeholder="ENTER_NEURAL_LINK@COM" class="bg-[#181528] border border-[#00F0FF] px-3 py-2 text-xs font-mono text-white focus:outline-none flex-1" />
+              <button class="bg-[#FFE600] text-black font-black font-mono text-xs px-5 py-2 uppercase hover:bg-white transition-colors">
+                EXECUTE &gt;&gt;
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "07",
+        key: "retro-crt",
+        name: "复古 CRT 显像管终端 (Retro Terminal)",
+        alias: "Fallout / VT100 / Matrix Phosphor",
+        desc: "深暗黑绿背景、单色荧光绿或琥珀色字符、扫描线阴影纹理、点阵等宽字体与 ASCII 框线装饰。",
+        palette: ["#070D09", "#33FF33", "#1A3320", "#00AA00", "#030805"],
+        render: () => `
+          <div class="bg-[#070D09] crt-scanlines text-[#33FF33] p-6 rounded border border-[#33FF33] font-mono text-xs shadow-[0_0_20px_rgba(51,255,51,0.2)]">
+            <div class="border-b border-[#33FF33] pb-2 mb-4 flex justify-between">
+              <span>VT100 OBSERVATORY TERMINAL [ONLINE]</span>
+              <span>BAUD: 9600</span>
+            </div>
+            <div class="mb-4">
+              <pre class="text-[10px] text-[#00AA00] leading-tight mb-2">
++---------------------------------------------------+
+| MODEL DETECTED: LLAMA-3.3-70B-INSTRUCT           |
+| ORIGIN: META_AI_RESEARCH                          |
++---------------------------------------------------+</pre>
+              <p class="leading-relaxed mb-3">
+                &gt; Distillation routine: 405B parameters condensed into 70B dense matrix.<br/>
+                &gt; Memory footprint optimized for multi-GPU consumer deployment.<br/>
+                &gt; Integrity check: PASSED. License: LLAMA-3.3 COMMUNITY.
+              </p>
+            </div>
+            <div class="border border-[#1A3320] p-3 mb-4 bg-[#0A140D]">
+              <div>STATUS: WAITING_FOR_INPUT...</div>
+              <div class="flex items-center space-x-2 mt-2">
+                <span>DISPATCH_SUBSCRIBER&gt;</span>
+                <input type="text" placeholder="user@domain.org" class="bg-transparent text-[#33FF33] focus:outline-none flex-1 border-b border-[#33FF33] text-xs font-mono" />
+              </div>
+            </div>
+            <div class="flex justify-between items-center text-[10px] text-[#00AA00]">
+              <span>PRESS [ENTER] TO COMMIT SUBSCRIPTION</span>
+              <span class="animate-pulse">&#9608; READY</span>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "08",
+        key: "glassmorphism",
+        name: "极光拟态与毛玻璃 (Glassmorphism)",
+        alias: "Frosted Glass / Aurora / Floating",
+        desc: "绚丽的弥散极光渐变背景、多层半透明磨砂毛玻璃（`backdrop-blur-xl`）、发光微渐变边框，仙气空灵。",
+        palette: ["#162447", "#8A2BE2", "#00F0FF", "#FFFFFF", "#1F4068"],
+        render: () => `
+          <div class="aurora-bg p-8 rounded-3xl relative overflow-hidden text-white font-sans shadow-2xl">
+            <div class="absolute -top-12 -left-12 w-48 h-48 bg-purple-500/30 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-12 -right-12 w-48 h-48 bg-cyan-400/30 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-6 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]">
+              <span class="text-xs font-mono px-3 py-1 rounded-full bg-white/20 border border-white/30 text-cyan-200 mb-3 inline-block">
+                ✧ AURORA INTELLIGENCE STREAM
+              </span>
+              <h2 class="text-2xl font-bold tracking-tight mb-2 text-white">
+                Gemini Next Ultra Multi-Spectral
+              </h2>
+              <p class="text-xs text-slate-200 leading-relaxed mb-6 font-normal">
+                突破视听感知界限，通过高密度空间音频与全光谱视觉感知建立实时三维推理空间。
+              </p>
+              <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-sm">
+                  <div class="text-[10px] text-slate-300">MMMU Bench</div>
+                  <div class="text-lg font-bold text-cyan-300">73.2%</div>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-3 rounded-xl backdrop-blur-sm">
+                  <div class="text-[10px] text-slate-300">Auditory Reasoning</div>
+                  <div class="text-lg font-bold text-pink-300">99.1 Elo</div>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <input type="email" placeholder="订阅极光早报..." class="bg-white/10 border border-white/20 px-4 py-2 rounded-xl text-xs text-white placeholder-slate-300 focus:outline-none backdrop-blur-md flex-1" />
+                <button class="bg-gradient-to-r from-cyan-400 to-purple-500 text-white font-semibold text-xs px-5 py-2 rounded-xl hover:opacity-95 transition-opacity shadow-lg">
+                  连接
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "09",
+        key: "neumorphism",
+        name: "新拟物化浮雕 (Neumorphism / Soft UI)",
+        alias: "Soft Plastic / Embossed / Minimal Tactile",
+        desc: "同色系柔和背景、双向高光与阴影打造的凸起/凹陷质感（Soft Emboss），极度柔和与解压的触感体验。",
+        palette: ["#E0E5EC", "#B8B9BE", "#FFFFFF", "#4A5568", "#3182CE"],
+        render: () => `
+          <div class="neumorphic-box text-[#4A5568] p-8 rounded-3xl font-sans">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-bold text-[#718096] uppercase tracking-wider">SOFT_UI RADAR V2</span>
+              <div class="w-3 h-3 rounded-full bg-emerald-400 shadow-[inset_1px_1px_2px_#276749]"></div>
+            </div>
+            <h2 class="text-2xl font-bold text-[#2D3748] mb-2 tracking-tight">
+              OpenAI o3-mini Reasoning Capsule
+            </h2>
+            <p class="text-xs text-[#718096] leading-relaxed mb-6">
+              针对科学与工程领域高度优化的思维实体，以极致紧凑的塑性体积释放庞大的数学解题潜力。
+            </p>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="neumorphic-inset p-4 rounded-2xl text-center">
+                <div class="text-[10px] font-bold text-[#A0AEC0]">CODEFORCES</div>
+                <div class="text-xl font-bold text-[#2D3748] mt-1">2087 Elo</div>
+              </div>
+              <div class="neumorphic-inset p-4 rounded-2xl text-center">
+                <div class="text-[10px] font-bold text-[#A0AEC0]">BENCHMARK</div>
+                <div class="text-xl font-bold text-[#3182CE] mt-1">AIME 87%</div>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <input type="email" placeholder="name@domain.com" class="neumorphic-inset px-4 py-2.5 rounded-2xl text-xs text-[#2D3748] focus:outline-none flex-1 font-medium" />
+              <button class="neumorphic-box hover:shadow-[4px_4px_8px_#B8B9BE,-4px_-4px_8px_#FFFFFF] text-[#3182CE] font-bold text-xs px-6 py-2.5 rounded-2xl transition-all active:shadow-[inset_3px_3px_6px_#B8B9BE,inset_-3px_-3px_6px_#FFFFFF]">
+                订阅
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "10",
+        key: "y2k-retro",
+        name: "千禧复古怀旧与 Windows 95 (Y2K Aesthetic)",
+        alias: "Win95 / Pixel Nostalgia / Netscape",
+        desc: "经典的灰色凹凸边框（Bevel Border）、经典蓝条标题栏、90年代早期互联网的粗糙与情怀。",
+        palette: ["#008080", "#C0C0C0", "#000080", "#FFFFFF", "#000000"],
+        render: () => `
+          <div class="bg-[#008080] p-6 rounded-none font-sans">
+            <div class="bg-[#C0C0C0] win95-outset p-1 max-w-xl mx-auto shadow-2xl">
+              <!-- 经典 Win95 标题栏 -->
+              <div class="bg-[#000080] text-white px-2 py-1 flex justify-between items-center font-bold text-xs select-none">
+                <span>🖥️ AI_Model_Telemetry_Wizard.exe</span>
+                <div class="flex space-x-1">
+                  <button class="win95-outset bg-[#C0C0C0] text-black w-4 h-4 text-[9px] flex items-center justify-center font-bold">_</button>
+                  <button class="win95-outset bg-[#C0C0C0] text-black w-4 h-4 text-[9px] flex items-center justify-center font-bold">✕</button>
+                </div>
+              </div>
+              <div class="p-4 text-black text-xs">
+                <div class="flex items-center space-x-3 mb-3">
+                  <div class="text-3xl">💾</div>
+                  <div>
+                    <h3 class="font-bold text-sm">DeepSeek-R1-Zero.sys 已就绪</h3>
+                    <p class="text-gray-600 text-[11px]">发现全新的开源全强化学习内核...</p>
+                  </div>
+                </div>
+                <div class="win95-inset bg-white p-3 mb-4 text-[11px] font-mono text-black h-24 overflow-y-scroll">
+                  [SYSTEM_INIT] Checking dependencies... OK<br/>
+                  [DOWNLOAD] Fetching weights from HuggingFace... 100%<br/>
+                  [METRICS] MMLU: 90.8% | MATH-500: 97.3%<br/>
+                  [READY] The AI revolution is now decentralized.
+                </div>
+                <div class="flex justify-between items-center">
+                  <input type="email" placeholder="C:\mail\address.txt" class="win95-inset px-2 py-1 text-xs text-black bg-white flex-1 mr-2" />
+                  <div class="flex space-x-2">
+                    <button class="win95-outset bg-[#C0C0C0] active:win95-inset px-4 py-1 font-bold text-xs">确定</button>
+                    <button class="win95-outset bg-[#C0C0C0] active:win95-inset px-4 py-1 font-bold text-xs">取消</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "11",
+        key: "nordic-japandi",
+        name: "北欧原木与日式侘寂温润 (Japandi Warmth)",
+        alias: "Organic Minimalist / Linen & Sage / Hygge",
+        desc: "温和亚麻米色（#F4EFEA）、鼠尾草绿与陶土色点缀、柔和的圆角曲线、极具亲和力与松弛感。",
+        palette: ["#F4EFEA", "#FAF8F5", "#4A5D4E", "#C46851", "#736B63"],
+        render: () => `
+          <div class="bg-[#F4EFEA] text-[#4A433D] p-8 rounded-3xl border border-[#E5DDD4] font-sans shadow-sm">
+            <span class="text-[11px] uppercase tracking-widest text-[#C46851] font-semibold mb-2 block">Serene Intelligence</span>
+            <h2 class="text-2xl sm:text-3xl font-normal text-[#2E2925] tracking-tight mb-3">
+              温柔栖息的思维模型
+            </h2>
+            <p class="text-xs text-[#736B63] leading-relaxed mb-6 font-normal max-w-md">
+              抛开喧嚣的算力堆砌，让大语言模型融入生活与日常沉思。以克制的节奏，理解你的每一次呼吸与表达。
+            </p>
+            <div class="bg-[#FAF8F5] p-5 rounded-2xl border border-[#EBE4DC] mb-6 flex justify-between items-center">
+              <div>
+                <div class="text-xs font-medium text-[#2E2925]">日均检索静默守护</div>
+                <div class="text-[11px] text-[#8C8379]">无重大模型发布时不打扰</div>
+              </div>
+              <span class="w-8 h-8 rounded-full bg-[#4A5D4E] text-white flex items-center justify-center text-xs">🌿</span>
+            </div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="安静地留下你的邮箱..." class="bg-[#FAF8F5] border border-[#E5DDD4] px-4 py-2.5 rounded-full text-xs text-[#2E2925] placeholder-[#A3998E] focus:outline-none flex-1" />
+              <button class="bg-[#4A5D4E] hover:bg-[#3D4D40] text-white text-xs px-6 py-2.5 rounded-full transition-colors font-medium">
+                随喜订阅
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "12",
+        key: "vogue-monochrome",
+        name: "极黑白高奢时装风 (Luxury Vogue)",
+        alias: "Editorial Fashion / High-Contrast B&W",
+        desc: "极致纯黑与纯白撞色、无任何多余彩色、拉长的修长字体、如时尚杂志大片般的排版张力。",
+        palette: ["#000000", "#FFFFFF", "#333333", "#777777", "#EEEEEE"],
+        render: () => `
+          <div class="bg-black text-white p-8 rounded-none border border-white/20 font-serif">
+            <div class="flex justify-between items-end border-b border-white/20 pb-3 mb-6 font-sans">
+              <span class="text-[10px] tracking-[0.3em] uppercase text-gray-400">HAUTE INTELLIGENCE</span>
+              <span class="text-[10px] tracking-[0.2em] uppercase">VOL. XXVI</span>
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-light tracking-tight mb-4 uppercase">
+              THE ESSENCE OF REASONING.
+            </h2>
+            <p class="text-xs text-gray-300 font-sans tracking-wide leading-relaxed mb-8 max-w-lg">
+              NO COLOR. NO NOISE. PURITY IN COMPUTATION. DEEPSEEK-R1 AND THE ART OF AUTONOMOUS LOGIC.
+            </p>
+            <div class="border-t border-b border-white/20 py-4 mb-8 flex justify-between font-sans text-xs">
+              <div><span class="text-gray-500 block text-[9px] uppercase">ARCHITECTURE</span><span class="tracking-widest">671B MoE</span></div>
+              <div><span class="text-gray-500 block text-[9px] uppercase">STATUS</span><span class="tracking-widest">REVOLUTIONARY</span></div>
+              <div><span class="text-gray-500 block text-[9px] uppercase">DISTRIBUTION</span><span class="tracking-widest">GLOBAL</span></div>
+            </div>
+            <div class="flex items-center space-x-2 font-sans">
+              <input type="email" placeholder="JOIN THE PRIVATE DISPATCH" class="bg-transparent border-b border-white px-2 py-1 text-xs text-white placeholder-gray-500 focus:outline-none flex-1 uppercase tracking-wider" />
+              <button class="bg-white text-black px-6 py-1.5 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors">
+                ENTER
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "13",
+        key: "solarpunk",
+        name: "太阳能朋克与生态未来 (Solarpunk)",
+        alias: "Eco-Futurism / Brass & Foliage / Hopeful",
+        desc: "象牙米底、森林常春藤绿、黄铜金色金属点缀、充满绿植有机弧线与清洁科技希望感。",
+        palette: ["#FAF8F0", "#1E4D2B", "#D4AF37", "#5B8C5A", "#2B2D42"],
+        render: () => `
+          <div class="bg-[#FAF8F0] text-[#2B2D42] p-8 rounded-3xl border-2 border-[#5B8C5A]/30 font-sans shadow-md">
+            <div class="flex items-center space-x-2 text-xs font-semibold text-[#1E4D2B] mb-2">
+              <span>☀ ECO-COMPUTATION HARVEST</span>
+              <span class="text-[#D4AF37]">✦ 100% SOLAR POWERED</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-[#1E4D2B] mb-3">
+              绿色微瓦 AI 探测网络
+            </h2>
+            <p class="text-xs text-[#5B8C5A] leading-relaxed mb-6">
+              以极低能耗运行于分布式清洁能源节点。每一次全网巡检，不仅记录智能演进，更守护碳中和未来。
+            </p>
+            <div class="bg-[#FFFFFF] border border-[#5B8C5A]/20 p-4 rounded-2xl mb-6 grid grid-cols-2 gap-4">
+              <div>
+                <span class="text-[10px] text-gray-500 uppercase block font-medium">分布式节点</span>
+                <span class="text-lg font-bold text-[#1E4D2B]">1,420 个</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-gray-500 uppercase block font-medium">综合算力功耗</span>
+                <span class="text-lg font-bold text-[#D4AF37]">0.08 kWh</span>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="订阅绿色生态速报..." class="bg-[#FFFFFF] border border-[#5B8C5A]/40 px-4 py-2 rounded-xl text-xs focus:outline-none flex-1" />
+              <button class="bg-[#1E4D2B] hover:bg-[#163820] text-[#FAF8F0] font-semibold text-xs px-5 py-2 rounded-xl transition-colors">
+                加入耕耘
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "14",
+        key: "industrial-cad",
+        name: "工业工程蓝图与 CAD 制图 (CAD Blueprint)",
+        alias: "Architectural / Blueprint / Crosshair Specs",
+        desc: "经典工程蓝图深海蓝（#0A192F）、白色精密网格线与坐标轴、等宽制图字体、十字准星测量标记。",
+        palette: ["#0A192F", "#64FFDA", "#FFFFFF", "#172A45", "#8892B0"],
+        render: () => `
+          <div class="bg-[#0A192F] blueprint-grid text-white p-8 rounded-none border border-[#64FFDA]/40 font-mono text-xs relative">
+            <div class="absolute top-2 right-2 text-[9px] text-[#64FFDA]/60">COORD: [37.7749, -122.4194] // SCALE 1:100</div>
+            <div class="border-b border-[#64FFDA]/30 pb-2 mb-4">
+              <span class="text-[#64FFDA] font-bold">DRAWING_NO: DWG-AI-2026-X</span>
+              <h2 class="text-xl font-bold tracking-wider mt-1 text-white uppercase">ARCHITECTURAL SPEC // GEMINI-2.0-FLASH</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-6 bg-[#172A45]/80 p-4 border border-[#64FFDA]/20">
+              <div>
+                <span class="text-[10px] text-gray-400 block">+ COMPUTE CORE</span>
+                <span class="text-[#64FFDA] font-bold text-sm">SPARSE MOE ENGINE</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-gray-400 block">+ LATENCY TOLERANCE</span>
+                <span class="text-white font-bold text-sm">&plusmn; 0.05 MS</span>
+              </div>
+            </div>
+            <div class="mb-4 text-[11px] text-[#8892B0] leading-relaxed">
+              [CRITICAL SPECIFICATION]: Multi-layer attention matrix optimized for 1M sequence length with linear memory complexity.
+            </div>
+            <div class="flex gap-2 border-t border-[#64FFDA]/30 pt-3">
+              <input type="text" placeholder="ENTER_RECEIVER_TELEGRAPH..." class="bg-[#0A192F] border border-[#64FFDA]/60 px-3 py-1.5 text-xs text-white focus:outline-none flex-1 font-mono" />
+              <button class="bg-[#64FFDA] text-[#0A192F] px-4 py-1.5 font-bold text-xs hover:bg-white transition-colors">
+                SIGN & SUBMIT
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "15",
+        key: "vaporwave-80s",
+        name: "80s 蒸汽波与复古合成波 (Synthwave 80s)",
+        alias: "Outrun / Miami Sunset / Neon Violet",
+        desc: "落日深紫黑、烈焰霓虹粉（#FF2A85）与电光青（#00F0FF）、水平地平线网格条纹、80年代街机浪漫。",
+        palette: ["#1A0B2E", "#FF2A85", "#00F0FF", "#FFE600", "#71226E"],
+        render: () => `
+          <div class="bg-gradient-to-b from-[#1A0B2E] to-[#2E124D] text-white p-8 rounded-xl border-2 border-[#FF2A85] shadow-[0_0_25px_rgba(255,42,133,0.3)] font-sans">
+            <div class="flex justify-between items-center font-mono text-xs text-[#00F0FF] mb-3">
+              <span>🌴 SYNTHWAVE DISPATCH // 1984-2026</span>
+              <span class="text-[#FFE600]">★ MIAMI NIGHTS</span>
+            </div>
+            <h2 class="text-3xl font-black italic tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#FF2A85] via-[#FFE600] to-[#00F0FF] mb-2 uppercase">
+              DEEPSEEK OVERDRIVE
+            </h2>
+            <p class="text-xs text-pink-200 leading-relaxed mb-6 font-medium">
+              狂飙在算力霓虹公路上的无拘灵魂。打破闭源巨头的防线，用纯粹的开源速度轰鸣整个时代。
+            </p>
+            <div class="grid grid-cols-2 gap-3 mb-6 font-mono text-xs text-center">
+              <div class="bg-[#71226E]/40 p-3 rounded border border-[#FF2A85]"><span class="text-pink-300 text-[10px] block">BOOST SPEED</span><strong class="text-white text-base">79.8 MPH</strong></div>
+              <div class="bg-[#71226E]/40 p-3 rounded border border-[#00F0FF]"><span class="text-cyan-300 text-[10px] block">NEON NITRO</span><strong class="text-[#FFE600] text-base">ACTIVATED</strong></div>
+            </div>
+            <div class="flex gap-2">
+              <input type="email" placeholder="YOUR_CASSETTE@TAPE.FM" class="bg-[#1A0B2E] border border-[#00F0FF] px-3 py-2 rounded text-xs text-white font-mono focus:outline-none flex-1" />
+              <button class="bg-gradient-to-r from-[#FF2A85] to-[#FFE600] text-black font-black text-xs px-5 py-2 rounded uppercase hover:opacity-90 transition-opacity">
+                CRUISE &gt;&gt;
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "16",
+        key: "memphis-pop",
+        name: "孟菲斯几何波普 (Memphis Pop)",
+        alias: "80s Geometric / Whimsical / Confetti",
+        desc: "波普几何碎花、高反差明艳三原色碰撞、俏皮的波浪折线与倾斜角度、不规则的趣味设计。",
+        palette: ["#FFF9E6", "#FF5964", "#35A7FF", "#FFE74C", "#111111"],
+        render: () => `
+          <div class="memphis-pattern p-8 rounded-2xl border-4 border-black text-black font-sans shadow-[8px_8px_0px_0px_#111]">
+            <div class="inline-block bg-[#FFE74C] border-2 border-black px-3 py-0.5 font-black text-xs uppercase -rotate-2 mb-4">
+              ● POP INTELLIGENCE
+            </div>
+            <h2 class="text-3xl font-black tracking-tight mb-2 uppercase text-[#FF5964]">
+              HELLO, o3-MINI!
+            </h2>
+            <p class="font-bold text-xs text-gray-800 leading-relaxed mb-6">
+              谁说硬核 STEM 算法必须冷冰冰？用充满跃动感的彩色几何积木，解构世界上最棘手的数理难题！
+            </p>
+            <div class="flex space-x-3 mb-6">
+              <div class="bg-[#35A7FF] text-white p-3 rounded-xl border-2 border-black font-black text-center flex-1 rotate-1">
+                <div class="text-[10px] uppercase">AIME SCORE</div>
+                <div class="text-lg">87.3%</div>
+              </div>
+              <div class="bg-[#FFE74C] text-black p-3 rounded-xl border-2 border-black font-black text-center flex-1 -rotate-1">
+                <div class="text-[10px] uppercase">SPEED</div>
+                <div class="text-lg">TURBO</div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <input type="text" placeholder="输入邮箱一起玩..." class="bg-white border-2 border-black px-3 py-2 font-bold text-xs focus:outline-none flex-1" />
+              <button class="bg-[#FF5964] hover:bg-[#FF3F4C] text-white font-black text-xs px-5 py-2 border-2 border-black shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+                JOIN!
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "17",
+        key: "claymorphism",
+        name: "粘土拟态与棉花糖 (Claymorphism)",
+        alias: "3D Soft Clay / Pillowy / Friendly",
+        desc: "柔和棉花糖马卡龙色调、圆润饱满的双层内阴影（Inset Shadow）、极具治愈感的萌系 3D 触感。",
+        palette: ["#E3EEF9", "#FFFFFF", "#6C92D8", "#F5A3B7", "#4A5568"],
+        render: () => `
+          <div class="bg-[#E3EEF9] p-8 rounded-[36px] font-sans text-[#334155]">
+            <div class="bg-[#F0F6FF] clay-card p-6 rounded-[28px] max-w-md mx-auto">
+              <div class="w-10 h-10 rounded-2xl bg-[#6C92D8] text-white flex items-center justify-center text-lg mb-3 shadow-md">
+                ☁️
+              </div>
+              <h2 class="text-2xl font-extrabold text-[#1E293B] mb-2 tracking-tight">
+                松软温和的模型雷达
+              </h2>
+              <p class="text-xs text-[#64748B] leading-relaxed mb-6 font-medium">
+                把冰冷的机器代码包裹进绵密柔和的粘土糖果罐里。每小时轻轻看一眼世界，没有压迫感。
+              </p>
+              <div class="bg-white/80 p-4 rounded-2xl mb-6 shadow-inner flex justify-between items-center text-xs">
+                <span class="font-bold text-[#475569]">巡检心跳</span>
+                <span class="font-bold text-[#6C92D8] bg-[#E3EEF9] px-3 py-1 rounded-full">正常活跃中</span>
+              </div>
+              <div class="flex gap-2">
+                <input type="email" placeholder="填入邮箱..." class="bg-white px-4 py-2.5 rounded-2xl text-xs text-[#334155] focus:outline-none shadow-inner flex-1 font-medium" />
+                <button class="bg-[#6C92D8] hover:bg-[#5A82CC] text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-[4px_6px_12px_rgba(108,146,216,0.4)] active:scale-95 transition-all">
+                  加入
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "18",
+        key: "zen-ink",
+        name: "日式水墨与枯山水 (Zen Ink Wash)",
+        alias: "Wabi-Sabi / Raw Paper / Calligraphy Stamp",
+        desc: "未漂白和纸质感（#EFECE6）、浓淡水墨灰黑、朱砂印泥红（#BC002D）盖印点缀，静谧内敛。",
+        palette: ["#EFECE6", "#2B2B2B", "#BC002D", "#8C857B", "#D6D1C4"],
+        render: () => `
+          <div class="bg-[#EFECE6] text-[#2B2B2B] p-8 rounded-none border border-[#D6D1C4] font-serif shadow-sm">
+            <div class="flex justify-between items-start border-b border-[#D6D1C4] pb-3 mb-6 font-sans">
+              <span class="text-xs text-[#8C857B] tracking-widest">枯山水 // 智能遥测记</span>
+              <div class="w-6 h-6 border-2 border-[#BC002D] text-[#BC002D] flex items-center justify-center text-[10px] font-bold">
+                印
+              </div>
+            </div>
+            <h2 class="text-3xl font-light tracking-widest mb-3">
+              知 止 而 后 有 定
+            </h2>
+            <p class="text-xs text-[#6B655C] leading-relaxed mb-6 font-normal max-w-lg">
+              万千参数如落叶归尘。大模型之胜，不在浮躁喧哗之多，而在静水流深之悟。记录当代逻辑智识之极。
+            </p>
+            <div class="border-t border-[#D6D1C4] py-4 mb-6 grid grid-cols-2 gap-4 text-xs font-sans">
+              <div>
+                <span class="text-[#8C857B] block text-[10px]">当期境界</span>
+                <span class="font-medium text-[#2B2B2B]">深度推理涌现</span>
+              </div>
+              <div>
+                <span class="text-[#8C857B] block text-[10px]">心流延迟</span>
+                <span class="font-medium text-[#BC002D]">瞬息即达</span>
+              </div>
+            </div>
+            <div class="flex gap-2 font-sans">
+              <input type="email" placeholder="留墨邮箱..." class="bg-transparent border-b border-[#2B2B2B] px-3 py-1.5 text-xs text-[#2B2B2B] focus:outline-none flex-1" />
+              <button class="bg-[#2B2B2B] hover:bg-black text-[#EFECE6] text-xs px-5 py-1.5 transition-colors font-sans">
+                奉闻
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "19",
+        key: "dark-academia",
+        name: "古典暗黑学院派 (Dark Academia)",
+        alias: "Vintage Scholar / Antique Leather / Guild",
+        desc: "浓咖啡与皮革深棕（#18120E）、复古烫金徽标、羊皮纸米褐文字、古典哲学研究社团质感。",
+        palette: ["#18120E", "#2A1F17", "#D4AF37", "#ECE4D8", "#7A6552"],
+        render: () => `
+          <div class="bg-[#18120E] text-[#ECE4D8] p-8 rounded-lg border border-[#4A392A] font-serif shadow-2xl">
+            <div class="flex justify-between items-center border-b border-[#4A392A] pb-3 mb-6 font-sans text-xs">
+              <span class="text-[#D4AF37] tracking-widest uppercase">✦ Collegium Intelligentia</span>
+              <span class="text-stone-400">MDCCCXXVI</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-normal text-[#FAF6F0] mb-3 italic">
+              Disputatio de Mentis Artificiosae
+            </h2>
+            <p class="text-xs text-[#A89887] leading-relaxed mb-6 font-sans max-w-lg">
+              在深夜的拱顶图书馆中，探讨由纯粹逻辑衍生出的人类思辨镜像。追踪每一篇跨时代数学与机器哲学论文。
+            </p>
+            <div class="bg-[#2A1F17] border border-[#4A392A] p-4 rounded mb-6 font-sans text-xs grid grid-cols-2 gap-4">
+              <div>
+                <span class="text-[#7A6552] text-[10px] uppercase block">ARCHIVE INDEX</span>
+                <span class="text-[#D4AF37] font-semibold">TOME NO. 671</span>
+              </div>
+              <div>
+                <span class="text-[#7A6552] text-[10px] uppercase block">SCHOLARSHIP</span>
+                <span class="text-[#ECE4D8] font-semibold">PEER VERIFIED</span>
+              </div>
+            </div>
+            <div class="flex gap-2 font-sans">
+              <input type="email" placeholder="scholar@oxford.edu" class="bg-[#2A1F17] border border-[#4A392A] px-3 py-2 text-xs text-white placeholder-[#7A6552] focus:outline-none flex-1" />
+              <button class="bg-[#D4AF37] hover:bg-[#C59F27] text-black font-semibold text-xs px-5 py-2 transition-colors">
+                入会订阅
+              </button>
+            </div>
+          </div>
+        `
+      },
+      {
+        id: "20",
+        key: "bloomberg-terminal",
+        name: "高频金融与彭博终端 (Bloomberg Matrix)",
+        alias: "Quant Trader / Data Dense / High-Freq",
+        desc: "纯黑背景、彭博经典琥珀橙（#FF9900）与高频跳动涨跌红绿、极度稠密的数据表格与等宽排版。",
+        palette: ["#000000", "#FF9900", "#00FF66", "#FF3333", "#1A1A1A"],
+        render: () => `
+          <div class="bg-black text-[#FF9900] p-6 rounded-none border-2 border-[#FF9900] font-mono text-xs shadow-none">
+            <div class="bg-[#FF9900] text-black px-2 py-0.5 font-bold flex justify-between items-center mb-3">
+              <span>BLOOMBERG AI TERMINAL // REAL-TIME TICKER</span>
+              <span>MARKET: ACTIVE</span>
+            </div>
+            <div class="grid grid-cols-4 gap-2 border-b border-[#333] pb-2 mb-3 text-[11px]">
+              <div>TICKER: <strong class="text-white">DS-R1</strong></div>
+              <div>OPEN: <strong class="text-[#00FF66]">▲ 97.3</strong></div>
+              <div>CHG: <strong class="text-[#00FF66]">+14.2%</strong></div>
+              <div>VOL: <strong class="text-white">671B</strong></div>
+            </div>
+            <div class="mb-4">
+              <table class="w-full text-left text-[10px] text-gray-300 border-collapse">
+                <tr class="border-b border-gray-800 text-gray-500">
+                  <th class="py-1">MODEL</th><th>PARAM</th><th>MMLU</th><th>SWE-BENCH</th><th>ACTION</th>
+                </tr>
+                <tr class="border-b border-gray-900">
+                  <td class="text-white py-1">Claude 3.7</td><td>Hybrid</td><td class="text-[#00FF66]">91.2%</td><td class="text-[#00FF66]">70.3%</td><td>[BUY]</td>
+                </tr>
+                <tr class="border-b border-gray-900">
+                  <td class="text-white py-1">OpenAI o3</td><td>Special</td><td class="text-[#00FF66]">92.4%</td><td class="text-gray-400">68.5%</td><td>[HOLD]</td>
+                </tr>
+                <tr>
+                  <td class="text-white py-1">Llama 3.3</td><td>70B</td><td class="text-gray-400">88.6%</td><td class="text-gray-400">54.2%</td><td>[DEPLOY]</td>
+                </tr>
+              </table>
+            </div>
+            <div class="bg-[#111] p-2 border border-gray-800 flex items-center space-x-2">
+              <span class="text-[#FF9900]">IB-CHAT_SUB&gt;</span>
+              <input type="text" placeholder="trader@hedgefund.ny" class="bg-transparent text-white border-none focus:outline-none text-xs font-mono flex-1" />
+              <button class="bg-[#FF9900] text-black px-3 py-1 font-bold text-[10px] uppercase hover:bg-white transition-colors">EXECUTE</button>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let currentStyleIndex = 0;
+
+    // 初始化导航栏与下拉菜单
+    function initApp() {
+      const navContainer = document.getElementById('styles-nav-list');
+      const selector = document.getElementById('style-selector');
+
+      stylesDatabase.forEach((style, index) => {
+        // 侧边栏按钮
+        const btn = document.createElement('button');
+        btn.id = `nav-btn-${index}`;
+        btn.className = `w-full text-left px-3 py-2 rounded-lg text-xs font-mono flex items-center justify-between transition-all ${
+          index === 0 ? 'bg-[#1C2230] text-emerald-400 border border-emerald-500/40' : 'text-slate-400 hover:bg-[#1A1E29] hover:text-slate-200'
+        }`;
+        btn.onclick = () => selectStyle(index);
+        btn.innerHTML = `
+          <div class="flex items-center space-x-2 truncate">
+            <span class="text-[10px] opacity-60">${style.id}</span>
+            <span class="truncate font-medium">${style.name.split(' ')[0]}</span>
+          </div>
+          <span class="text-[9px] px-1.5 py-0.5 rounded bg-black/40 text-slate-500 border border-slate-800">
+            ${style.key}
+          </span>
+        `;
+        navContainer.appendChild(btn);
+
+        // 下拉框选项
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.innerText = `${style.id}. ${style.name}`;
+        selector.appendChild(opt);
+      });
+
+      renderCurrentStyle();
+    }
+
+    // 切换风格
+    function selectStyle(index) {
+      currentStyleIndex = index;
+      document.getElementById('style-selector').value = index;
+
+      // 更新按钮高亮
+      document.querySelectorAll('#styles-nav-list button').forEach((btn, i) => {
+        if (i === index) {
+          btn.className = 'w-full text-left px-3 py-2 rounded-lg text-xs font-mono flex items-center justify-between transition-all bg-[#1C2230] text-emerald-400 border border-emerald-500/40';
+        } else {
+          btn.className = 'w-full text-left px-3 py-2 rounded-lg text-xs font-mono flex items-center justify-between transition-all text-slate-400 hover:bg-[#1A1E29] hover:text-slate-200';
+        }
+      });
+
+      renderCurrentStyle();
+    }
+
+    function switchStyle(val) {
+      selectStyle(parseInt(val, 10));
+    }
+
+    // 渲染当前所选风格
+    function renderCurrentStyle() {
+      const style = stylesDatabase[currentStyleIndex];
+
+      document.getElementById('current-id-badge').innerText = style.id;
+      document.getElementById('current-style-name').innerText = style.name;
+      document.getElementById('current-style-alias').innerText = `// ${style.alias}`;
+      document.getElementById('current-style-desc').innerText = style.desc;
+
+      // 渲染调色板
+      const paletteContainer = document.getElementById('palette-swatches');
+      paletteContainer.innerHTML = style.palette.map(color => `
+        <div class="flex items-center space-x-1 bg-black/50 px-2 py-0.5 rounded border border-slate-800" title="${color}">
+          <span class="w-3 h-3 rounded-full border border-white/20 inline-block" style="background-color: ${color}"></span>
+          <span class="text-[10px] text-slate-300 font-mono">${color}</span>
+        </div>
+      `).join('');
+
+      // 渲染沙盒舞台中的具体网页内容
+      const stage = document.getElementById('preview-stage-container');
+      stage.innerHTML = style.render();
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
