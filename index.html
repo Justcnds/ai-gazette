@@ -123,7 +123,7 @@
   <!-- 主体报纸内容 -->
   <main class="max-w-6xl mx-auto px-4 sm:px-6 flex-1 w-full">
 
-    <!-- 社论头条文章区 (支持原生内嵌视频播放) -->
+    <!-- 社论头条文章区 (支持原生内嵌视频播放与多图谱展示) -->
     <article class="border-b-2 border-[#1A1815] pb-10 mb-12" id="lead-editorial-section">
       <!-- 动态填充头版头条 -->
     </article>
@@ -135,17 +135,17 @@
           公报收录库 · 最新通报矩阵
         </h3>
         <p class="font-sans-ui text-xs text-[#5A554E] mt-0.5">
-          每小时经由 Google Spark 抓取并存入 Google 表格的最新权重与多媒体实测
+          每小时经由云端中枢抓取的全部前沿模型通报，按发布时间由最新至最旧从上到下全景列出（点击任意卡片查阅详版）
         </p>
       </div>
 
       <div class="flex flex-wrap items-center gap-2 font-sans-ui text-xs">
-        <button onclick="filterArticles('all', this)" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold">全部通报</button>
-        <button onclick="filterArticles('video', this)" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">🎬 附带实测视频</button>
+        <button onclick="filterArticles('all', this)" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold cursor-pointer">全部通报</button>
+        <button onclick="filterArticles('video', this)" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815] cursor-pointer">🎬 附带实测视频</button>
       </div>
     </section>
 
-    <!-- 多栏报纸特刊卡片流 -->
+    <!-- 多栏报纸特刊卡片流 (严格从上往下、包含全部最新模型、点击弹窗查看详情) -->
     <section id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
       <div class="col-span-full py-12 text-center text-[#8C867D] font-sans-ui text-xs">
         ⟳ 正在通过云端 API 调取 Google 表格最新模型记录...
@@ -186,7 +186,7 @@
             <button 
               id="sub-submit-btn"
               onclick="handleSubscribe()"
-              class="w-full sm:w-auto bg-[#8E3B2B] hover:bg-[#732F22] text-white font-sans-ui text-xs font-bold px-6 py-2.5 uppercase tracking-wider transition-colors active:scale-98">
+              class="w-full sm:w-auto bg-[#8E3B2B] hover:bg-[#732F22] text-white font-sans-ui text-xs font-bold px-6 py-2.5 uppercase tracking-wider transition-colors active:scale-98 cursor-pointer">
               签收并订阅
             </button>
           </div>
@@ -217,11 +217,48 @@
     </div>
   </footer>
 
+  <!-- 统一全景详版特刊阅读器 (Detail Modal / 遵循 frontend-design 规范) -->
+  <div id="model-detail-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 hidden" onclick="handleModalBackdropClick(event)">
+    <div class="bg-[#F7F4EC] border-2 border-[#1A1815] shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden relative" onclick="event.stopPropagation()">
+      
+      <!-- 模态框报刊顶栏 -->
+      <div class="border-b border-[#D5CEBF] bg-[#F3EFE6] px-5 py-3 flex justify-between items-center text-xs font-sans-ui">
+        <div class="flex items-center space-x-2">
+          <span class="bg-[#8E3B2B] text-white px-2 py-0.5 font-bold uppercase tracking-wider text-[11px]">公报通报详版专刊</span>
+          <span class="text-[#8C867D]">|</span>
+          <span id="modal-dispatch-no" class="font-mono-ui font-semibold text-[#1A1815]">DOSSIER NO. 01</span>
+        </div>
+        <button onclick="closeModelDetail()" class="text-[#5A554E] hover:text-[#1A1815] font-bold text-sm px-2 py-0.5 border border-transparent hover:border-[#1A1815] transition-colors cursor-pointer" title="关闭 (Esc)">
+          ✕ 关闭 [ESC]
+        </button>
+      </div>
+
+      <!-- 可滚动报纸主体 -->
+      <div class="overflow-y-auto p-6 sm:p-8 flex-1 space-y-6">
+        <div id="modal-detail-content"></div>
+      </div>
+
+      <!-- 模态框底部状态栏 -->
+      <div class="border-t border-[#D5CEBF] bg-[#FAF7F0] px-5 py-3 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs font-sans-ui text-[#5A554E]">
+        <span>《前沿模型公报》深度详版专报 · 官方权威评测与架构全景速览</span>
+        <div class="flex items-center space-x-3">
+          <button onclick="copyModelSummary()" id="copy-summary-btn" class="border border-[#D5CEBF] px-3 py-1 bg-white hover:border-[#1A1815] text-[#1A1815] font-semibold transition-colors cursor-pointer">
+            📋 复制通报摘要
+          </button>
+          <button onclick="closeModelDetail()" class="bg-[#1A1815] text-white px-4 py-1 hover:bg-[#8E3B2B] font-semibold transition-colors cursor-pointer">
+            完成阅读
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- 数据联动与动态渲染逻辑 -->
   <script>
     const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxTL7O1fKtVVYKRaMACo2prGJroCmLN2CHHDfzHUchpJG1V5k-qfUwinIrZ7WpGzW36/exec";
 
-    // 本地预置备用模型库（包含实时全模态前沿模型）
+    // 本地预置备用模型库（包含真实抓取的全模态前沿模型）
     let currentModels = [
       {
         releaseTime: "2026-09-04 18:00:00",
@@ -230,7 +267,9 @@
         features: "【6B DiT 统一图像生成与指令编辑全开源基座】\n1. 单一 6B DiT 架构统一两大任务：从零训练的 60 亿参数 Diffusion Transformer，单一 Checkpoint 原生统一了高质量文本生图（Text-to-Image）与基于参考图的指令引导编辑（Instruction-guided Editing），彻底摒弃外挂编辑网络的割裂做法。\n2. 顶尖中英双语文字排版与海报生成：针对中文文字生成与商业排版畸变等行业痛点重点攻坚，在高质量写实图像、创意海报、商业广告及中英混杂字体渲染上表现出极高的文字连贯性与自然光影合成能力。\n3. Twin-DMD 四步极速蒸馏：提供 50 步高保真 Base 模型，同时发布基于 Twin-DMD 蒸馏的 Turbo 模型，仅需 2~4 步采样即可完成高质量生成与编辑；原生提供 BF16 与 FP8 权重，极低显存门槛，完美适配消费级显卡与 ComfyUI 生态。\n4. 100% 全开源训练配方：采用无参数 RMSNorm 与 Muon 优化器，建立纯图像预训练视觉先验后再引入文本联合训练，模型权重与推理代码全栈 Apache-2.0 开源。",
         benchmarks: "Qwen-Image-Bench 英文: 53.53 | 中文: 53.38 | Turbo 步数: 4 步 | Base 步数: 50 步 | 参数: 6B | 开源协议: Apache-2.0",
         officialUrl: "https://github.com/inclusionAI/LLaDA-Image",
-        coverUrl: "https://cdn-thumbnails.huggingface.co/social-thumbnails/inclusionAI.png",
+        coverUrl: "https://cdn-thumbnails.huggingface.co/social-thumbnails/models/inclusionAI/LLaDA-Image-Turbo.png",
+        featImgUrl: "https://huggingface.co/inclusionAI/LLaDA-Image/resolve/main/assets/showcase.png",
+        benchImgUrl: "https://huggingface.co/inclusionAI/LLaDA-Image/resolve/main/assets/qwen-imagebench.png",
         videoUrl: ""
       },
       {
@@ -241,6 +280,8 @@
         benchmarks: "实时延迟: 24 fps 流式 | 视频: 720p 持续流 | 音频: 48 kHz 高清立体声 | 镜头: 6DoF 连续无漂移",
         officialUrl: "https://runway.com/research/introducing-gwm-worlds-2",
         coverUrl: "https://d3phaj0sisr2ct.cloudfront.net/site/research/gwm-worlds-2/posters/survivor-both-13s.webp",
+        featImgUrl: "",
+        benchImgUrl: "",
         videoUrl: "https://d3phaj0sisr2ct.cloudfront.net/site/research/gwm-worlds-2/videos/survivor-both-13s.mp4"
       },
       {
@@ -251,6 +292,8 @@
         benchmarks: "ARC-AGI-3: 98.6% (历史最高纪录) | FrontierMath: 97.6% | OSWorld 2.0: 72.6%",
         officialUrl: "https://openai.com/index/path-to-astra/",
         coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/7BwAXDCmDn9UWCm6xJlALO/dc62713fa34b189cba7ed9dc6c3ff490/ChatGPT_Image_Sep_3__2026__01_08_17_PM.png",
+        featImgUrl: "",
+        benchImgUrl: "",
         videoUrl: ""
       },
       {
@@ -261,6 +304,8 @@
         benchmarks: "Artificial Analysis 指数: 375B 取得 47 分 | 0.9B-375B 全尺寸覆盖 | 512k 长上下文",
         officialUrl: "https://recipes.vllm.ai/IFM/K2-Horizon-3.7B",
         coverUrl: "https://imagedelivery.net/XaQqGmJkNE7OzU_SNXiB6g/247walls-custom-mql6jmxk-0-cahb/public",
+        featImgUrl: "",
+        benchImgUrl: "",
         videoUrl: ""
       },
       {
@@ -271,11 +316,14 @@
         benchmarks: "FLEURS 跨 60 语种词错误率 (WER): 仅 5.2% (全球第一) | 吞吐: 300x 实时处理速率",
         officialUrl: "https://venturebeat.com/infrastructure/microsoft-ais-mai-transcribe-2-undercuts-openai-google-and-elevenlabs-on-price-and-speed",
         coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/3njXWwdtKNGR2ej5bHdbB2/4422b6b8afba67920f5aa8a86b110635/ChatGPT_Image_Sep_3__2026__11_37_04_AM.png",
+        featImgUrl: "",
+        benchImgUrl: "",
         videoUrl: ""
       }
     ];
 
     let currentFilter = 'all';
+    let currentModalModel = null;
 
     // 严谨时间解析：支持 YYYY-MM-DD HH:mm:ss、YYYY-MM-DD HH:mm、ISO 格式及斜杠格式
     function parseReleaseTime(timeStr) {
@@ -360,9 +408,8 @@
       }
 
       const lead = displayList[0];
-      const rest = displayList.slice(1);
 
-      // 头版头条渲染
+      // 头版头条渲染（包含主图、架构配图、评测图表，且右侧具备详版专报入口）
       const leadSection = document.getElementById('lead-editorial-section');
       const leadHasVideo = isDirectVideo(lead.videoUrl);
 
@@ -385,10 +432,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div class="lg:col-span-8 text-sm sm:text-base leading-relaxed text-[#2A2723]">
             
-            <!-- 原生视频或封面图展示 -->
+            <!-- 主视觉展示：原生视频播放器或封面头图 -->
             ${leadHasVideo ? `
-              <div class="mb-5 border border-[#D5CEBF] p-1.5 bg-white shadow-sm">
-                <video controls playsinline preload="metadata" poster="${lead.coverUrl || ''}" class="w-full h-auto max-h-[420px] object-cover bg-black">
+              <div class="mb-6 border border-[#D5CEBF] p-1.5 bg-white shadow-sm">
+                <video controls playsinline preload="metadata" poster="${lead.coverUrl || ''}" class="w-full h-auto max-h-[440px] object-cover bg-black">
                   <source src="${lead.videoUrl}" type="video/mp4">
                   您的浏览器暂不支持直接播放。
                 </video>
@@ -398,22 +445,51 @@
                 </div>
               </div>
             ` : (lead.coverUrl ? `
-              <div class="mb-4 border border-[#D5CEBF] p-1 bg-white">
-                <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full max-h-[380px] object-contain bg-[#FAF7F0] filter grayscale hover:grayscale-0 transition-all duration-300" />
-                <div class="text-[11px] font-sans-ui text-[#8C867D] p-1 text-center">公报通报配图：${lead.name} 架构与实测档案</div>
+              <div class="mb-6 border border-[#D5CEBF] p-1 bg-white">
+                <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full max-h-[400px] object-contain bg-[#FAF7F0] filter grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer" onclick="openModelDetail(0)" />
+                <div class="text-[11px] font-sans-ui text-[#8C867D] p-1.5 text-center">公报通报配图：${lead.name} 架构与实测档案 (点击可展开详版)</div>
               </div>
             ` : '')}
 
             <p class="drop-cap mb-4 whitespace-pre-line">
               ${lead.features}
             </p>
+
+            <!-- 架构与功能详图展示 (若模型有配备) -->
+            ${lead.featImgUrl ? `
+              <div class="my-6 border border-[#D5CEBF] p-3 bg-[#FFFDF9] shadow-xs">
+                <div class="font-sans-ui text-[11px] text-[#8E3B2B] font-bold uppercase tracking-wider mb-2 flex items-center justify-between border-b border-[#EAE5D9] pb-1">
+                  <span>FIG 1.0 // 核心架构与多模态生成实测图谱</span>
+                  <span class="font-mono-ui text-[#8C867D]">SYSTEM ARCHITECTURE</span>
+                </div>
+                <img src="${lead.featImgUrl}" alt="${lead.name} 架构图" class="w-full max-h-[460px] object-contain bg-white mx-auto cursor-pointer hover:opacity-95 transition-opacity" onclick="openModelDetail(0)" />
+                <div class="text-[11px] font-sans-ui text-[#8C867D] pt-2 text-center border-t border-[#EAE5D9] mt-2">
+                  ▲ 官方架构图谱与效果样例（点击图片或右侧按钮可查阅专刊详版）
+                </div>
+              </div>
+            ` : ''}
+
             <div class="pull-quote">
               “${(lead.benchmarks || '').split('|')[0] || '前沿架构演进的最新里程碑'}”
             </div>
+
+            <!-- 评测跑分与基准表现配图 (若模型有配备) -->
+            ${lead.benchImgUrl ? `
+              <div class="my-6 border border-[#D5CEBF] p-3 bg-[#FFFDF9] shadow-xs">
+                <div class="font-sans-ui text-[11px] text-[#8E3B2B] font-bold uppercase tracking-wider mb-2 flex items-center justify-between border-b border-[#EAE5D9] pb-1">
+                  <span>FIG 2.0 // 权威基准评测对比图谱</span>
+                  <span class="font-mono-ui text-[#8C867D]">BENCHMARK MATRIX</span>
+                </div>
+                <img src="${lead.benchImgUrl}" alt="${lead.name} 评测图" class="w-full max-h-[440px] object-contain bg-white mx-auto cursor-pointer hover:opacity-95 transition-opacity" onclick="openModelDetail(0)" />
+                <div class="text-[11px] font-sans-ui text-[#8C867D] pt-2 text-center border-t border-[#EAE5D9] mt-2">
+                  ▲ 权威基准跑分对比与性能表现曲线
+                </div>
+              </div>
+            ` : ''}
           </div>
 
           <aside class="lg:col-span-4 border-l border-[#D5CEBF] pl-0 lg:pl-6 pt-4 lg:pt-0">
-            <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-5 shadow-sm">
+            <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-5 shadow-sm sticky top-6">
               <h3 class="font-sans-ui text-xs font-bold uppercase tracking-wider text-[#8E3B2B] mb-3 border-b border-[#D5CEBF] pb-2">
                 头条模型档案 // 规格与跑分总表
               </h3>
@@ -427,11 +503,22 @@
                   <dd class="font-semibold text-[#1A1815]">${lead.org}</dd>
                 </div>
                 <div class="border-t border-[#EAE5D9] pt-2">
+                  <dt class="text-[#8C867D]">发布时间</dt>
+                  <dd class="font-mono-ui font-semibold text-[#1A1815]">${lead.releaseTime}</dd>
+                </div>
+                <div class="border-t border-[#EAE5D9] pt-2">
                   <dt class="text-[#8C867D]">官方基准跑分</dt>
                   <dd class="font-mono-ui font-bold text-xs text-[#8E3B2B] leading-relaxed">${lead.benchmarks || '权威评测认证中'}</dd>
                 </div>
               </dl>
-              <div class="mt-5 pt-3 border-t border-[#D5CEBF] space-y-2">
+              
+              <div class="mt-5 pt-3 border-t border-[#D5CEBF] space-y-2.5">
+                <!-- 关键：点击进入详细界面的同源统一方法入口 -->
+                <button onclick="openModelDetail(0)" class="w-full text-center bg-[#8E3B2B] hover:bg-[#732F22] text-white py-2.5 px-3 text-xs font-sans-ui font-bold uppercase tracking-wider transition-colors shadow-xs cursor-pointer flex items-center justify-center space-x-2">
+                  <span>📖 展开查阅头条深度通报专刊</span>
+                  <span>&rarr;</span>
+                </button>
+
                 ${leadHasVideo ? `
                   <a href="${lead.videoUrl}" target="_blank" class="block text-center bg-[#1A1815] text-[#F7F4EC] py-2 px-3 text-xs font-sans-ui font-bold hover:bg-[#8E3B2B] transition-colors">
                     ▶ 独立窗口播放实测录像
@@ -447,35 +534,39 @@
         </div>
       `;
 
-      // 渲染特刊矩阵
+      // 渲染特刊矩阵（包含全量模型、从上往下按时间降序排列、点击卡片直接开详版弹窗）
       const container = document.getElementById('articles-container');
-      container.innerHTML = rest.map((item, idx) => {
+      container.innerHTML = displayList.map((item, idx) => {
         const hasVideo = isDirectVideo(item.videoUrl);
+        const isHeadliner = (idx === 0);
         return `
-          <article class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 flex flex-col justify-between shadow-sm hover:border-[#1A1815] transition-colors">
+          <article onclick="openModelDetail(${idx})" class="group cursor-pointer bg-[#FFFDF9] border border-[#D5CEBF] hover:border-[#1A1815] p-6 flex flex-col justify-between shadow-xs hover:shadow-md transition-all">
             <div>
               <div class="flex justify-between items-center font-sans-ui text-xs text-[#8C867D] mb-3 border-b border-[#EAE5D9] pb-2">
-                <span class="text-[#8E3B2B] font-bold uppercase tracking-wider">${item.org}</span>
-                <span class="font-mono-ui">${item.releaseTime}</span>
+                <div class="flex items-center space-x-2">
+                  <span class="text-[#8E3B2B] font-bold uppercase tracking-wider truncate max-w-[170px]">${item.org}</span>
+                  ${isHeadliner ? '<span class="bg-[#1A1815] text-white text-[9px] font-mono-ui px-1 py-0.2 rounded-xs font-bold whitespace-nowrap">本期头条</span>' : ''}
+                </div>
+                <span class="font-mono-ui text-[11px]">${item.releaseTime}</span>
               </div>
 
-              <h4 class="font-serif text-xl font-bold text-[#1A1815] leading-snug mb-3">
+              <h4 class="font-serif text-xl font-bold text-[#1A1815] group-hover:text-[#8E3B2B] transition-colors leading-snug mb-3">
                 ${item.name}
               </h4>
 
               ${hasVideo ? `
                 <div class="mb-3 border border-[#EAE5D9] p-1 bg-black">
-                  <video controls playsinline preload="metadata" poster="${item.coverUrl || ''}" class="w-full h-40 object-cover">
+                  <video controls playsinline preload="metadata" poster="${item.coverUrl || ''}" class="w-full h-40 object-cover" onclick="event.stopPropagation()">
                     <source src="${item.videoUrl}" type="video/mp4">
                   </video>
                 </div>
               ` : (item.coverUrl ? `
-                <div class="mb-3 border border-[#EAE5D9] p-0.5 bg-white">
-                  <img src="${item.coverUrl}" alt="${item.name}" class="w-full h-32 object-cover filter grayscale hover:grayscale-0 transition-all duration-200" />
+                <div class="mb-3 border border-[#EAE5D9] p-0.5 bg-white overflow-hidden">
+                  <img src="${item.coverUrl}" alt="${item.name}" class="w-full h-36 object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-102 transition-all duration-300" />
                 </div>
               ` : '')}
 
-              <p class="text-xs text-[#4A453F] leading-relaxed mb-4 line-clamp-4 whitespace-pre-line">
+              <p class="text-xs text-[#4A453F] leading-relaxed mb-4 line-clamp-3 whitespace-pre-line">
                 ${item.features}
               </p>
             </div>
@@ -485,11 +576,11 @@
                 跑分: <span class="text-[#1A1815] font-semibold">${item.benchmarks || '暂无评测数据'}</span>
               </div>
               <div class="pt-2 border-t border-[#EAE5D9] flex justify-between items-center">
-                <span class="font-mono-ui text-[10px] text-[#8C867D]">NO. 0${idx + 2}</span>
-                <a href="${item.officialUrl}" target="_blank" class="text-[#8E3B2B] font-bold text-xs hover:underline flex items-center space-x-1">
-                  <span>查阅通报</span>
+                <span class="font-mono-ui text-[10px] text-[#8C867D]">DISPATCH NO. 0${idx + 1}</span>
+                <span class="text-[#8E3B2B] group-hover:underline font-bold text-xs flex items-center space-x-1">
+                  <span>查阅深度专报</span>
                   <span>&rarr;</span>
-                </a>
+                </span>
               </div>
             </div>
           </article>
@@ -500,12 +591,154 @@
     function filterArticles(cat, btnEl) {
       currentFilter = cat;
       document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.className = 'filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]';
+        btn.className = 'filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815] cursor-pointer';
       });
       if (btnEl) {
-        btnEl.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold';
+        btnEl.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold cursor-pointer';
       }
       renderPage();
+    }
+
+    // ==========================================
+    // 统一详版弹窗交互 (Single Source of Truth)
+    // ==========================================
+    function openModelDetail(idx) {
+      const model = currentModels[idx];
+      if (!model) return;
+      currentModalModel = model;
+
+      const modal = document.getElementById('model-detail-modal');
+      const dispatchNo = document.getElementById('modal-dispatch-no');
+      const content = document.getElementById('modal-detail-content');
+
+      dispatchNo.innerText = `DOSSIER NO. 0${idx + 1} // ${model.releaseTime}`;
+
+      const hasVideo = isDirectVideo(model.videoUrl);
+
+      content.innerHTML = `
+        <div class="border-b border-[#D5CEBF] pb-4 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 font-sans-ui text-xs text-[#8C867D] mb-2">
+            <span class="text-[#8E3B2B] font-bold tracking-wider uppercase text-xs sm:text-sm">PUBLISHER // ${model.org}</span>
+            <span class="font-mono-ui bg-[#EAE5D9] text-[#1A1815] px-2 py-0.5 font-bold">RELEASED: ${model.releaseTime}</span>
+          </div>
+          <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1A1815] tracking-tight leading-tight">
+            ${model.name}
+          </h2>
+        </div>
+
+        <!-- 媒体全景展区 (支持视频/主图/架构图/跑分图并列全显) -->
+        <div class="space-y-6">
+          ${hasVideo ? `
+            <div class="border border-[#D5CEBF] p-2 bg-black shadow-sm">
+              <video controls playsinline preload="metadata" poster="${model.coverUrl || ''}" class="w-full max-h-[460px] object-contain">
+                <source src="${model.videoUrl}" type="video/mp4">
+              </video>
+              <div class="text-[11px] font-sans-ui text-[#8C867D] p-2 bg-[#FAF7F0] flex justify-between items-center border-t border-[#EAE5D9]">
+                <span class="font-bold text-[#1A1815]">🎬 官方原生实测与交互演示</span>
+                <a href="${model.videoUrl}" target="_blank" class="text-[#8E3B2B] font-semibold hover:underline">下载原片 &rarr;</a>
+              </div>
+            </div>
+          ` : (model.coverUrl ? `
+            <div class="border border-[#D5CEBF] p-1.5 bg-white shadow-xs">
+              <img src="${model.coverUrl}" alt="${model.name} 封面" class="w-full max-h-[420px] object-contain bg-[#FAF7F0]" />
+              <div class="text-[11px] font-sans-ui text-[#8C867D] py-1.5 text-center border-t border-[#EAE5D9] mt-1">公报通报封面档案：${model.name}</div>
+            </div>
+          ` : '')}
+
+          ${model.featImgUrl ? `
+            <div class="border border-[#D5CEBF] p-3 bg-white shadow-xs">
+              <div class="font-sans-ui text-xs text-[#8E3B2B] font-bold uppercase tracking-wider mb-2 border-b border-[#EAE5D9] pb-1 flex justify-between items-center">
+                <span>FIG 1.0 // 功能与架构实测详解图谱</span>
+                <span class="font-mono-ui text-[#8C867D]">SYSTEM ARCHITECTURE</span>
+              </div>
+              <img src="${model.featImgUrl}" alt="${model.name} 架构功能图" class="w-full max-h-[500px] object-contain bg-[#FAF7F0]" />
+              <div class="text-[11px] font-sans-ui text-[#8C867D] pt-2 text-center border-t border-[#EAE5D9] mt-2">
+                ▲ 官方技术白皮书架构图与实际生成样例
+              </div>
+            </div>
+          ` : ''}
+
+          ${model.benchImgUrl ? `
+            <div class="border border-[#D5CEBF] p-3 bg-white shadow-xs">
+              <div class="font-sans-ui text-xs text-[#8E3B2B] font-bold uppercase tracking-wider mb-2 border-b border-[#EAE5D9] pb-1 flex justify-between items-center">
+                <span>FIG 2.0 // 官方权威基准评测对比图谱</span>
+                <span class="font-mono-ui text-[#8C867D]">BENCHMARK MATRIX</span>
+              </div>
+              <img src="${model.benchImgUrl}" alt="${model.name} 评测图谱" class="w-full max-h-[460px] object-contain bg-[#FAF7F0]" />
+              <div class="text-[11px] font-sans-ui text-[#8C867D] pt-2 text-center border-t border-[#EAE5D9] mt-2">
+                ▲ 权威评测跑分雷达/曲线表现
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- 详细技术文本解析区 -->
+        <div class="mt-6 border-t border-[#D5CEBF] pt-6">
+          <h3 class="font-sans-ui text-xs font-bold uppercase tracking-wider text-[#8E3B2B] mb-3">
+            TECHNICAL DOSSIER // 核心功能与架构深度解析
+          </h3>
+          <div class="font-serif text-sm sm:text-base leading-relaxed text-[#2A2723] whitespace-pre-line bg-[#FFFDF9] border border-[#D5CEBF] p-6 shadow-xs">
+            ${model.features}
+          </div>
+        </div>
+
+        <!-- 评测跑分总览 -->
+        <div class="mt-6">
+          <h3 class="font-sans-ui text-xs font-bold uppercase tracking-wider text-[#8E3B2B] mb-3">
+            BENCHMARKS & METRICS // 权威评测跑分与基准指标
+          </h3>
+          <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 shadow-xs">
+            <div class="font-mono-ui text-xs sm:text-sm text-[#1A1815] leading-relaxed divide-y divide-[#EAE5D9]">
+              ${(model.benchmarks || '权威评测认证中').split('|').map(b => `
+                <div class="py-2.5 flex items-start space-x-2">
+                  <span class="text-[#8E3B2B] font-bold">▪</span>
+                  <span>${b.trim()}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- 官方出处与行动面板 -->
+        <div class="mt-6 p-5 bg-[#FAF7F0] border border-[#D5CEBF] flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div>
+            <div class="font-sans-ui text-xs font-bold text-[#1A1815]">官方权威原始出处与开源库</div>
+            <div class="font-sans-ui text-[11px] text-[#8C867D] mt-0.5">直通官方技术论文、权重下载地址或在线体验环境</div>
+          </div>
+          <a href="${model.officialUrl}" target="_blank" class="w-full sm:w-auto bg-[#1A1815] hover:bg-[#8E3B2B] text-white px-5 py-2.5 text-xs font-sans-ui font-bold uppercase tracking-wider transition-colors text-center">
+            前往官方发布原文 &rarr;
+          </a>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleEscKey);
+    }
+
+    function closeModelDetail() {
+      const modal = document.getElementById('model-detail-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleEscKey);
+    }
+
+    function handleEscKey(e) {
+      if (e.key === 'Escape') closeModelDetail();
+    }
+
+    function handleModalBackdropClick(e) {
+      if (e.target.id === 'model-detail-modal') closeModelDetail();
+    }
+
+    function copyModelSummary() {
+      if (!currentModalModel) return;
+      const text = `【${currentModalModel.name}】(${currentModalModel.releaseTime})\n研发团队: ${currentModalModel.org}\n\n核心亮点:\n${currentModalModel.features}\n\n评测基准:\n${currentModalModel.benchmarks}\n\n官方地址: ${currentModalModel.officialUrl}`;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copy-summary-btn');
+        btn.innerText = '✓ 摘要已复制到剪贴板！';
+        setTimeout(() => { btn.innerText = '📋 复制通报摘要'; }, 2000);
+      });
     }
 
     async function handleSubscribe() {
