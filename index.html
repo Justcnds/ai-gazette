@@ -27,17 +27,14 @@
       line-height: 1.6;
     }
 
-    /* 现代无衬线辅助字体（用于标签、元信息与数据） */
     .font-sans-ui {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     }
 
-    /* 等宽字体（用于时间戳、跑分与参数编号） */
     .font-mono-ui {
       font-family: ui-monospace, "SF Mono", "Menlo", "Courier New", monospace;
     }
 
-    /* 首字下沉（Drop Cap） */
     .drop-cap::first-letter {
       float: left;
       font-size: 3.8rem;
@@ -50,19 +47,12 @@
       font-family: Georgia, serif;
     }
 
-    /* 报纸双横分割线 */
     .double-rule {
       border-top: 3px double var(--border-dark);
       border-bottom: 1px solid var(--border-dark);
       height: 6px;
     }
 
-    /* 纸质轻微发丝细线 */
-    .hairline-rule {
-      border-color: var(--border-rule);
-    }
-
-    /* 报刊引语拉出样式（Pull Quote） */
     .pull-quote {
       border-top: 1px solid var(--border-dark);
       border-bottom: 1px solid var(--border-dark);
@@ -75,7 +65,6 @@
       color: var(--terracotta);
     }
 
-    /* 邮戳印章样式 */
     .postal-stamp {
       border: 2px dashed var(--terracotta);
       color: var(--terracotta);
@@ -93,9 +82,9 @@
         <span id="masthead-date">2026 年 9 月 5 日 · 星期六</span>
       </div>
       <div class="flex items-center space-x-4">
-        <span>全自动巡检周期：<strong class="text-[#8E3B2B]">每小时整点</strong></span>
+        <span>自动巡检：<strong class="text-[#8E3B2B]">每小时整点</strong></span>
         <span class="text-[#8C867D]">|</span>
-        <span>中枢状态：<span id="api-status" class="text-emerald-700 font-bold">● Google 表格已联通</span></span>
+        <span>中枢状态：<span id="api-status" class="text-emerald-700 font-bold">● 正在连接 Google 表格...</span></span>
       </div>
     </div>
   </div>
@@ -109,70 +98,64 @@
       前 沿 模 型 公 報
     </h1>
     <p class="font-sans-ui text-xs sm:text-sm text-[#5A554E] max-w-2xl mx-auto tracking-wide mb-6">
-      记录全球基础大语言模型演进轨迹 · 深度评测、架构规格与官方论文全景速览
+      记录全球基础大语言模型演进轨迹 · 深度评测、实测视频、架构规格与官方论文全景速览
     </p>
 
-    <!-- 报头双层线 -->
     <div class="double-rule my-4"></div>
 
-    <!-- 报头二级导航栏与电报状态 -->
     <div class="flex flex-col sm:flex-row justify-between items-center text-xs font-sans-ui py-1 text-[#5A554E]">
       <div class="flex items-center space-x-4">
         <span class="font-semibold text-[#1A1815]">今日要闻要目</span>
         <span class="hidden md:inline text-[#8C867D]">/</span>
-        <span class="hidden md:inline" id="lead-headline-summary">实时世界模型与通用自主电脑操作重大发布</span>
+        <span class="hidden md:inline">Runway 实时交互世界模型 GWM Worlds 2 发布</span>
         <span class="hidden md:inline text-[#8C867D]">/</span>
-        <span class="hidden md:inline">全开源科研舰队 K2 Horizon 起航</span>
+        <span class="hidden md:inline">OpenAI GPT-6 Astra 自主电脑操作突破</span>
       </div>
       <div class="flex items-center space-x-2 mt-2 sm:mt-0 font-mono-ui">
         <span class="w-2 h-2 rounded-full bg-[#8E3B2B] inline-block animate-pulse"></span>
-        <span>云端电报机：<span class="text-[#1A1815] font-bold">SPARK 巡检活跃</span></span>
+        <span>视频媒体直显：<span class="text-[#1A1815] font-bold">已就绪</span></span>
       </div>
     </div>
 
-    <!-- 底部分割线 -->
     <div class="border-b border-[#1A1815] mt-2 mb-8"></div>
   </header>
 
-  <!-- 主体报纸内容 (Broadsheet Main Body) -->
+  <!-- 主体报纸内容 -->
   <main class="max-w-6xl mx-auto px-4 sm:px-6 flex-1 w-full">
 
-    <!-- 社论头条文章区 (Lead Editorial Article) -->
+    <!-- 社论头条文章区 (支持原生内嵌视频播放) -->
     <article class="border-b-2 border-[#1A1815] pb-10 mb-12" id="lead-editorial-section">
       <!-- 动态填充头版头条 -->
     </article>
 
-    <!-- 栏目导航与检索控制台 (Section Filter Bar) -->
+    <!-- 栏目导航与检索控制台 -->
     <section class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D5CEBF] pb-4">
       <div>
         <h3 class="font-serif text-2xl font-bold text-[#1A1815] tracking-tight">
           公报收录库 · 最新通报矩阵
         </h3>
         <p class="font-sans-ui text-xs text-[#5A554E] mt-0.5">
-          每小时经由 Google Spark 抓取并存入 Google 表格的最新权重与架构通报
+          每小时经由 Google Spark 抓取并存入 Google 表格的最新权重与多媒体实测
         </p>
       </div>
 
-      <!-- 交互式筛选 -->
       <div class="flex flex-wrap items-center gap-2 font-sans-ui text-xs">
         <button onclick="filterArticles('all')" class="filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold">全部通报</button>
-        <button onclick="filterArticles('reasoning')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">推理与世界模型</button>
-        <button onclick="filterArticles('open-source')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">开源矩阵</button>
+        <button onclick="filterArticles('video')" class="filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]">🎬 附带实测视频</button>
       </div>
     </section>
 
-    <!-- 多栏报纸特刊卡片流 (Articles Grid) -->
+    <!-- 多栏报纸特刊卡片流 -->
     <section id="articles-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
       <div class="col-span-full py-12 text-center text-[#8C867D] font-sans-ui text-xs">
         ⟳ 正在通过云端 API 调取 Google 表格最新模型记录...
       </div>
     </section>
 
-    <!-- 底部：公报订阅电报所 (Postal Dispatch Subscription Desk) -->
+    <!-- 底部订阅电报所 -->
     <section id="subscription-desk" class="border-t-2 border-[#1A1815] pt-12 pb-16">
       <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-8 sm:p-10 max-w-3xl mx-auto relative shadow-sm">
         
-        <!-- 右上角仿真邮戳 -->
         <div class="absolute top-6 right-6 postal-stamp w-20 h-20 rounded-full flex flex-col items-center justify-center font-sans-ui text-[10px] uppercase font-bold transform rotate-12 pointer-events-none select-none">
           <span>SPARK AI</span>
           <span class="text-xs font-serif font-black">邮资已付</span>
@@ -189,7 +172,6 @@
           当有全球重磅模型发布时，系统将直接调用后台群发通道将图文速递发送至您的信箱。数据将实时记录于 Google 表格【Subscribers】名单簿中。
         </p>
 
-        <!-- 订阅表单 -->
         <div class="border-t border-b border-[#D5CEBF] py-4 my-4 font-sans-ui">
           <div class="flex flex-col sm:flex-row items-center gap-3">
             <div class="w-full sm:w-auto text-xs font-bold text-[#1A1815] whitespace-nowrap">
@@ -210,7 +192,6 @@
           </div>
         </div>
 
-        <!-- 状态反馈文案 -->
         <div id="sub-feedback" class="font-sans-ui text-xs mt-3 hidden"></div>
 
         <div class="flex justify-between items-center text-[11px] font-sans-ui text-[#8C867D] mt-6">
@@ -223,14 +204,13 @@
 
   </main>
 
-  <!-- 极具报刊质感的页脚 -->
   <footer class="border-t border-[#1A1815] bg-[#F1ECE1] py-8 text-center text-xs font-sans-ui text-[#5A554E]">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div>
         《前沿模型公报》编印社 · 2026 版权所有 · Google Spark & Apps Script 云端中枢已就绪
       </div>
       <div class="flex items-center space-x-4">
-        <span>数据链路：Google Sheets (Live)</span>
+        <span>多媒体支持：原生 HTML5 Video & CID 图片内嵌</span>
         <span>•</span>
         <span>托管节点：GitHub Pages</span>
       </div>
@@ -239,19 +219,19 @@
 
   <!-- 数据联动与动态渲染逻辑 -->
   <script>
-    // 正式绑定的 Google Apps Script Web App API 接口
     const APPS_SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbxTL7O1fKtVVYKRaMACo2prGJroCmLN2CHHDfzHUchpJG1V5k-qfUwinIrZ7WpGzW36/exec";
 
-    // 默认备用模型库（保证即便在断网或离线状态下也排版完整）
+    // 本地预置备用模型库（包含真实抓取的 Runway 官方实测视频）
     let currentModels = [
       {
         releaseTime: "2026-09-04 15:00",
         name: "Runway GWM Worlds 2",
         org: "Runway Research",
-        features: "【通用交互式世界模型新范式】实时生成 720p @ 24fps 持续视频流，同步合成 48kHz 高清环境音效与角色对白。首创双层 WorldPrompt 创世持久层与连续 6DoF 镜头轨迹控制。",
-        benchmarks: "实时延迟: 24 fps 流式 | 视频: 720p 持续流 | 音频: 48 kHz 高清立体声",
+        features: "【通用交互式世界模型新范式】实时生成 720p @ 24fps 持续视频流，同步合成 48kHz 高清环境音效与角色对白。首创双层 WorldPrompt 创世持久层与连续 6DoF 镜头轨迹控制。\n\n玩家与导演双轨操纵：一人以第一人称操控角色探索互动，另一人以导演身份实时改变场景天气、光照与突发事件。",
+        benchmarks: "实时延迟: 24 fps 流式 | 视频: 720p 持续流 | 音频: 48 kHz 高清立体声 | 镜头: 6DoF 连续无漂移",
         officialUrl: "https://runway.com/research/introducing-gwm-worlds-2",
-        coverUrl: "https://d3phaj0sisr2ct.cloudfront.net/site/research/gwm-worlds-2/images/gwm-worlds-2-card.webp"
+        coverUrl: "https://d3phaj0sisr2ct.cloudfront.net/site/research/gwm-worlds-2/posters/survivor-both-13s.webp",
+        videoUrl: "https://d3phaj0sisr2ct.cloudfront.net/site/research/gwm-worlds-2/videos/survivor-both-13s.mp4"
       },
       {
         releaseTime: "2026-09-03 14:00",
@@ -260,7 +240,8 @@
         features: "【通用自主计算机操作与 AGI 探索基座】端到端原生 Computer Use 操控鼠标键盘穿梭多款工业级 EDA/CAD 软件。Stargate 超算最大预训练跑次，攻克 Critical 级网络安全防线。",
         benchmarks: "ARC-AGI-3: 98.6% (历史最高纪录) | FrontierMath: 97.6% | OSWorld 2.0: 72.6%",
         officialUrl: "https://openai.com/index/path-to-astra/",
-        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/7BwAXDCmDn9UWCm6xJlALO/dc62713fa34b189cba7ed9dc6c3ff490/ChatGPT_Image_Sep_3__2026__01_08_17_PM.png"
+        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/7BwAXDCmDn9UWCm6xJlALO/dc62713fa34b189cba7ed9dc6c3ff490/ChatGPT_Image_Sep_3__2026__01_08_17_PM.png",
+        videoUrl: ""
       },
       {
         releaseTime: "2026-09-03 07:00",
@@ -269,7 +250,8 @@
         features: "【颠覆企业级性价比的语音多模态大模型】工业级 60 语种高精感知与混杂语码识别，标配声纹分离、字词级毫秒时间戳，吞吐速度达 300x Real-time。",
         benchmarks: "FLEURS 跨 60 语种词错误率 (WER): 仅 5.2% (全球第一) | 吞吐: 300x 实时处理速率",
         officialUrl: "https://venturebeat.com/infrastructure/microsoft-ais-mai-transcribe-2-undercuts-openai-google-and-elevenlabs-on-price-and-speed",
-        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/3njXWwdtKNGR2ej5bHdbB2/4422b6b8afba67920f5aa8a86b110635/ChatGPT_Image_Sep_3__2026__11_37_04_AM.png"
+        coverUrl: "https://images.ctfassets.net/jdtwqhzvc2n1/3njXWwdtKNGR2ej5bHdbB2/4422b6b8afba67920f5aa8a86b110635/ChatGPT_Image_Sep_3__2026__11_37_04_AM.png",
+        videoUrl: ""
       },
       {
         releaseTime: "2026-09-03 09:00",
@@ -278,13 +260,13 @@
         features: "【AI 史上规模最大的全开源科研舰队】将训练语料、分词器、配方及评测脚本全栈 Apache 2.0 开源。引入 MoVA 价值注意力与扩散蒸馏并行解码技术。",
         benchmarks: "Artificial Analysis 指数: 375B 取得 47 分 | 0.9B-375B 全尺寸覆盖 | 512k 长上下文",
         officialUrl: "https://recipes.vllm.ai/IFM/K2-Horizon-3.7B",
-        coverUrl: "https://imagedelivery.net/XaQqGmJkNE7OzU_SNXiB6g/247walls-custom-mql6jmxk-0-cahb/public"
+        coverUrl: "https://imagedelivery.net/XaQqGmJkNE7OzU_SNXiB6g/247walls-custom-mql6jmxk-0-cahb/public",
+        videoUrl: ""
       }
     ];
 
     let currentFilter = 'all';
 
-    // 1. 页面加载时自动从 Google 表格拉取实时模型
     async function loadModelsFromGoogleSheet() {
       const statusEl = document.getElementById('api-status');
       try {
@@ -293,27 +275,33 @@
         
         if (result && result.data && result.data.length > 0) {
           currentModels = result.data;
-          statusEl.innerText = `● Google 表格实时同步成功 (${currentModels.length} 条模型)`;
+          statusEl.innerText = `● Google 表格已联通 (${currentModels.length} 条实测通报)`;
           statusEl.className = "text-emerald-700 font-bold";
         }
       } catch (err) {
-        console.warn("未能直连 Google 表格，使用本地备份数据展示:", err);
-        statusEl.innerText = "● 展示缓存模型通报 (云端就绪)";
+        console.warn("未能直连 Google 表格，使用本地缓存数据:", err);
+        statusEl.innerText = "● 展示缓存通报 (云端就绪)";
         statusEl.className = "text-[#8E3B2B] font-bold";
       }
 
       renderPage();
     }
 
-    // 2. 渲染头版头条与文章矩阵
+    function isDirectVideo(url) {
+      if (!url) return false;
+      return url.includes('.mp4') || url.includes('.webm') || url.includes('cloudfront.net') && url.includes('video');
+    }
+
     function renderPage() {
       if (currentModels.length === 0) return;
 
-      const lead = currentModels[0]; // 最新的模型作为头条
-      const rest = currentModels.slice(1); // 其余作为专栏
+      const lead = currentModels[0];
+      const rest = currentModels.slice(1);
 
-      // 渲染头条
+      // 头版头条渲染
       const leadSection = document.getElementById('lead-editorial-section');
+      const leadHasVideo = isDirectVideo(lead.videoUrl);
+
       leadSection.innerHTML = `
         <div class="flex items-center justify-between border-b border-[#D5CEBF] pb-2 mb-4 font-sans-ui text-xs">
           <span class="bg-[#8E3B2B] text-white px-2 py-0.5 font-bold uppercase tracking-wider">本期特刊头条社论</span>
@@ -329,12 +317,26 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div class="lg:col-span-8 text-sm sm:text-base leading-relaxed text-[#2A2723]">
-            ${lead.coverUrl ? `
+            
+            <!-- 原生视频或封面图展示 -->
+            ${leadHasVideo ? `
+              <div class="mb-5 border border-[#D5CEBF] p-1.5 bg-white shadow-sm">
+                <video controls playsinline preload="metadata" poster="${lead.coverUrl || ''}" class="w-full h-auto max-h-[420px] object-cover bg-black">
+                  <source src="${lead.videoUrl}" type="video/mp4">
+                  您的浏览器暂不支持直接播放。
+                </video>
+                <div class="text-[11px] font-sans-ui text-[#8C867D] p-2 flex justify-between items-center bg-[#FAF7F0] border-t border-[#EAE5D9]">
+                  <span class="font-bold text-[#1A1815]">🎬 官方实测实拍视频 · 点击播放器即可在线观看</span>
+                  <a href="${lead.videoUrl}" target="_blank" class="text-[#8E3B2B] font-semibold hover:underline">下载高清原片 &rarr;</a>
+                </div>
+              </div>
+            ` : (lead.coverUrl ? `
               <div class="mb-4 border border-[#D5CEBF] p-1 bg-white">
                 <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full h-64 object-cover filter grayscale hover:grayscale-0 transition-all duration-300" />
                 <div class="text-[11px] font-sans-ui text-[#8C867D] p-1 text-center">公报通报配图：${lead.name} 架构与实测档案</div>
               </div>
-            ` : ''}
+            ` : '')}
+
             <p class="drop-cap mb-4 whitespace-pre-line">
               ${lead.features}
             </p>
@@ -362,8 +364,13 @@
                   <dd class="font-mono-ui font-bold text-xs text-[#8E3B2B] leading-relaxed">${lead.benchmarks || '权威评测认证中'}</dd>
                 </div>
               </dl>
-              <div class="mt-5 pt-3 border-t border-[#D5CEBF]">
-                <a href="${lead.officialUrl}" target="_blank" class="font-sans-ui text-xs font-bold text-[#8E3B2B] hover:underline flex items-center justify-between">
+              <div class="mt-5 pt-3 border-t border-[#D5CEBF] space-y-2">
+                ${leadHasVideo ? `
+                  <a href="${lead.videoUrl}" target="_blank" class="block text-center bg-[#1A1815] text-[#F7F4EC] py-2 px-3 text-xs font-sans-ui font-bold hover:bg-[#8E3B2B] transition-colors">
+                    ▶ 独立窗口播放实测录像
+                  </a>
+                ` : ''}
+                <a href="${lead.officialUrl}" target="_blank" class="font-sans-ui text-xs font-bold text-[#8E3B2B] hover:underline flex items-center justify-between pt-1">
                   <span>查阅官方论文与发布原文</span>
                   <span>&rarr;</span>
                 </a>
@@ -373,48 +380,70 @@
         </div>
       `;
 
-      // 渲染其余文章矩阵
+      // 渲染特刊矩阵
       const container = document.getElementById('articles-container');
-      container.innerHTML = rest.map((item, idx) => `
-        <article class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 flex flex-col justify-between shadow-sm hover:border-[#1A1815] transition-colors">
-          <div>
-            <div class="flex justify-between items-center font-sans-ui text-xs text-[#8C867D] mb-3 border-b border-[#EAE5D9] pb-2">
-              <span class="text-[#8E3B2B] font-bold uppercase tracking-wider">${item.org}</span>
-              <span class="font-mono-ui">${item.releaseTime}</span>
-            </div>
+      const filtered = rest.filter(item => {
+        if (currentFilter === 'video') return isDirectVideo(item.videoUrl);
+        return true;
+      });
 
-            <h4 class="font-serif text-xl font-bold text-[#1A1815] leading-snug mb-3">
-              ${item.name}
-            </h4>
-
-            ${item.coverUrl ? `
-              <div class="mb-3 border border-[#EAE5D9] p-0.5 bg-white">
-                <img src="${item.coverUrl}" alt="${item.name}" class="w-full h-32 object-cover filter grayscale hover:grayscale-0 transition-all duration-200" />
+      container.innerHTML = filtered.map((item, idx) => {
+        const hasVideo = isDirectVideo(item.videoUrl);
+        return `
+          <article class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 flex flex-col justify-between shadow-sm hover:border-[#1A1815] transition-colors">
+            <div>
+              <div class="flex justify-between items-center font-sans-ui text-xs text-[#8C867D] mb-3 border-b border-[#EAE5D9] pb-2">
+                <span class="text-[#8E3B2B] font-bold uppercase tracking-wider">${item.org}</span>
+                <span class="font-mono-ui">${item.releaseTime}</span>
               </div>
-            ` : ''}
 
-            <p class="text-xs text-[#4A453F] leading-relaxed mb-4 line-clamp-4 whitespace-pre-line">
-              ${item.features}
-            </p>
-          </div>
+              <h4 class="font-serif text-xl font-bold text-[#1A1815] leading-snug mb-3">
+                ${item.name}
+              </h4>
 
-          <div class="border-t border-[#D5CEBF] pt-3 mt-2 font-sans-ui text-xs">
-            <div class="text-[11px] text-[#8C867D] mb-3 font-mono-ui truncate">
-              跑分: <span class="text-[#1A1815] font-semibold">${item.benchmarks || '暂无评测数据'}</span>
+              ${hasVideo ? `
+                <div class="mb-3 border border-[#EAE5D9] p-1 bg-black">
+                  <video controls playsinline preload="metadata" poster="${item.coverUrl || ''}" class="w-full h-40 object-cover">
+                    <source src="${item.videoUrl}" type="video/mp4">
+                  </video>
+                </div>
+              ` : (item.coverUrl ? `
+                <div class="mb-3 border border-[#EAE5D9] p-0.5 bg-white">
+                  <img src="${item.coverUrl}" alt="${item.name}" class="w-full h-32 object-cover filter grayscale hover:grayscale-0 transition-all duration-200" />
+                </div>
+              ` : '')}
+
+              <p class="text-xs text-[#4A453F] leading-relaxed mb-4 line-clamp-4 whitespace-pre-line">
+                ${item.features}
+              </p>
             </div>
-            <div class="pt-2 border-t border-[#EAE5D9] flex justify-between items-center">
-              <span class="font-mono-ui text-[10px] text-[#8C867D]">NO. 0${idx + 2}</span>
-              <a href="${item.officialUrl}" target="_blank" class="text-[#8E3B2B] font-bold text-xs hover:underline flex items-center space-x-1">
-                <span>查阅通报</span>
-                <span>&rarr;</span>
-              </a>
+
+            <div class="border-t border-[#D5CEBF] pt-3 mt-2 font-sans-ui text-xs">
+              <div class="text-[11px] text-[#8C867D] mb-3 font-mono-ui truncate">
+                跑分: <span class="text-[#1A1815] font-semibold">${item.benchmarks || '暂无评测数据'}</span>
+              </div>
+              <div class="pt-2 border-t border-[#EAE5D9] flex justify-between items-center">
+                <span class="font-mono-ui text-[10px] text-[#8C867D]">NO. 0${idx + 2}</span>
+                <a href="${item.officialUrl}" target="_blank" class="text-[#8E3B2B] font-bold text-xs hover:underline flex items-center space-x-1">
+                  <span>查阅通报</span>
+                  <span>&rarr;</span>
+                </a>
+              </div>
             </div>
-          </div>
-        </article>
-      `).join('');
+          </article>
+        `;
+      }).join('');
     }
 
-    // 3. 订阅提交：真正写入 Google 表格
+    function filterArticles(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.className = 'filter-btn px-3 py-1 border border-[#D5CEBF] text-[#5A554E] hover:border-[#1A1815] hover:text-[#1A1815]';
+      });
+      event.target.className = 'filter-btn active px-3 py-1 bg-[#1A1815] text-white font-semibold';
+      renderPage();
+    }
+
     async function handleSubscribe() {
       const input = document.getElementById('sub-email-input');
       const submitBtn = document.getElementById('sub-submit-btn');
@@ -432,8 +461,6 @@
       feedback.innerText = "⟳ 正在向 Google 表格中枢同步登记录入...";
 
       try {
-        // 使用 POST 请求提交到你的 Google Apps Script Web App
-        // mode: 'no-cors' 确保在所有现代浏览器中免受重定向跨域干扰，依然顺利送达 Google 表格
         await fetch(APPS_SCRIPT_API_URL, {
           method: "POST",
           mode: "no-cors",
@@ -454,12 +481,10 @@
       }
     }
 
-    // 日期格式化
     const now = new Date();
     const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
     document.getElementById('masthead-date').innerText = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日 · ${days[now.getDay()]}`;
 
-    // 启动拉取
     loadModelsFromGoogleSheet();
   </script>
 </body>
