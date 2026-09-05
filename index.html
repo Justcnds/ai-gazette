@@ -347,6 +347,94 @@
     }
 
     // 核心时间降序排序（确保最新发布的模型永远位于最首位）
+
+    // ==========================================
+    // 纸质报刊优雅视觉降级与可视化仪表盘
+    // ==========================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function renderCardFallback(name, org) {
+      const safeName = escapeHtml(name || 'FRONTIER MODEL');
+      const safeOrg = escapeHtml(org || 'AI RESEARCH LAB');
+      return `
+        <div class="w-full h-36 bg-[#F5F2E9] border border-[#D5CEBF] p-3 flex flex-col justify-between relative overflow-hidden group-hover:bg-[#EFECE3] transition-colors select-none">
+          <div class="absolute -right-3 -bottom-5 text-[#E6E0D2] font-serif font-black text-6xl tracking-tighter opacity-50 pointer-events-none">AI</div>
+          <div class="flex items-center justify-between z-10">
+            <span class="text-[9px] font-mono-ui font-bold uppercase tracking-wider text-[#8E3B2B] bg-[#EAE5D9] px-1.5 py-0.5 border border-[#D5CEBF]">ARCHIVE DOSSIER</span>
+            <span class="text-[10px] font-mono-ui text-[#8C867D]">THE GAZETTE</span>
+          </div>
+          <div class="z-10 my-auto">
+            <div class="font-serif font-bold text-base text-[#1A1815] leading-snug line-clamp-2">${safeName}</div>
+            <div class="text-[11px] font-sans-ui text-[#5A554E] mt-0.5 truncate">${safeOrg}</div>
+          </div>
+          <div class="flex items-center justify-between text-[9px] font-mono-ui text-[#8C867D] z-10 border-t border-[#EAE5D9] pt-1">
+            <span>OFFICIAL RECORD</span>
+            <span>VERIFIED DISPATCH</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLeadFallback(name, org) {
+      const safeName = escapeHtml(name || 'FRONTIER MODEL');
+      const safeOrg = escapeHtml(org || 'AI RESEARCH LAB');
+      return `
+        <div class="w-full h-56 bg-[#F5F2E9] border border-[#D5CEBF] p-6 flex flex-col justify-between relative overflow-hidden select-none cursor-pointer" onclick="openModelDetail(0)">
+          <div class="absolute -right-6 -bottom-8 text-[#E6E0D2] font-serif font-black text-8xl tracking-tighter opacity-40 pointer-events-none">GAZETTE</div>
+          <div class="flex items-center justify-between z-10">
+            <span class="text-[10px] font-mono-ui font-bold uppercase tracking-widest text-white bg-[#8E3B2B] px-2.5 py-0.5">HEADLINE DOSSIER</span>
+            <span class="text-xs font-mono-ui text-[#8C867D]">OFFICIAL TECHNICAL ARCHIVE</span>
+          </div>
+          <div class="z-10 my-auto">
+            <div class="font-serif font-bold text-2xl sm:text-3xl text-[#1A1815] leading-tight mb-1">${safeName}</div>
+            <div class="text-xs font-sans-ui text-[#5A554E]">研发机构 / 官方实验室：<strong class="text-[#1A1815]">${safeOrg}</strong></div>
+          </div>
+          <div class="flex items-center justify-between text-[10px] font-mono-ui text-[#8C867D] z-10 border-t border-[#D5CEBF] pt-2">
+            <span>FRONTIER DISPATCH NO. 01</span>
+            <span class="text-[#8E3B2B] font-bold hover:underline flex items-center space-x-1">
+              <span>展开查阅完整架构专刊</span>
+              <span>&rarr;</span>
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBenchmarkMeters(benchmarksStr) {
+      if (!benchmarksStr) return '<div class="text-[#8C867D] text-xs">暂无基准跑分明细</div>';
+      const items = benchmarksStr.split(/[\|\n]/).map(s => s.trim()).filter(Boolean);
+      return items.map(item => {
+        const match = item.match(/([0-9]+(?:\.[0-9]+)?%?)/);
+        if (match) {
+          const score = match[1];
+          const val = parseFloat(score);
+          const pct = val > 100 ? 100 : (val < 10 ? Math.max(val * 10, 15) : val);
+          const title = item.replace(score, '').replace(/[:：]/g, '').trim();
+          return `
+            <div class="py-2">
+              <div class="flex justify-between items-center text-xs font-sans-ui mb-1.5">
+                <span class="font-semibold text-[#1A1815]">${escapeHtml(title || '基准性能指标')}</span>
+                <span class="font-mono-ui font-bold text-[#8E3B2B] bg-[#F7F4EC] border border-[#D5CEBF] px-2 py-0.5">${escapeHtml(score)}</span>
+              </div>
+              <div class="w-full bg-[#EAE5D9] h-2.5 overflow-hidden border border-[#D5CEBF]">
+                <div class="bg-gradient-to-r from-[#8E3B2B] to-[#C15C48] h-full transition-all duration-500" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="py-1.5 flex items-start space-x-2 text-xs font-sans-ui text-[#3C3833]">
+              <span class="text-[#8E3B2B] font-bold">▪</span>
+              <span>${escapeHtml(item)}</span>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
     function sortModelsByReleaseTime(models) {
       return models.sort((a, b) => parseReleaseTime(b.releaseTime) - parseReleaseTime(a.releaseTime));
     }
@@ -446,10 +534,14 @@
               </div>
             ` : (lead.coverUrl ? `
               <div class="mb-6 border border-[#D5CEBF] p-1 bg-white">
-                <img src="${lead.coverUrl}" alt="${lead.name}" class="w-full max-h-[400px] object-contain bg-[#FAF7F0] filter grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer" onclick="openModelDetail(0)" />
+                <img src="${lead.coverUrl}" alt="${lead.name}" onerror="this.onerror=null; this.parentElement.innerHTML=renderLeadFallback('${escapeHtml(lead.name)}', '${escapeHtml(lead.org)}');" class="w-full max-h-[400px] object-contain bg-[#FAF7F0] filter grayscale hover:grayscale-0 transition-all duration-300 cursor-pointer" onclick="openModelDetail(0)" />
                 <div class="text-[11px] font-sans-ui text-[#8C867D] p-1.5 text-center">公报通报配图：${lead.name} 架构与实测档案 (点击可展开详版)</div>
               </div>
-            ` : '')}
+            ` : `
+              <div class="mb-6 border border-[#D5CEBF] shadow-sm">
+                ${renderLeadFallback(lead.name, lead.org)}
+              </div>
+            `)}
 
             <p class="drop-cap mb-4 whitespace-pre-line">
               ${lead.features}
@@ -562,9 +654,13 @@
                 </div>
               ` : (item.coverUrl ? `
                 <div class="mb-3 border border-[#EAE5D9] p-0.5 bg-white overflow-hidden">
-                  <img src="${item.coverUrl}" alt="${item.name}" class="w-full h-36 object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-102 transition-all duration-300" />
+                  <img src="${item.coverUrl}" alt="${item.name}" onerror="this.onerror=null; this.parentElement.outerHTML=renderCardFallback('${escapeHtml(item.name)}', '${escapeHtml(item.org)}');" class="w-full h-36 object-cover filter grayscale group-hover:grayscale-0 group-hover:scale-102 transition-all duration-300" />
                 </div>
-              ` : '')}
+              ` : `
+                <div class="mb-3 border border-[#EAE5D9] overflow-hidden">
+                  ${renderCardFallback(item.name, item.org)}
+                </div>
+              `)}
 
               <p class="text-xs text-[#4A453F] leading-relaxed mb-4 line-clamp-3 whitespace-pre-line">
                 ${item.features}
@@ -682,19 +778,14 @@
           </div>
         </div>
 
-        <!-- 评测跑分总览 -->
+        <!-- 评测跑分总览 (动态条形进度条可视化) -->
         <div class="mt-6">
           <h3 class="font-sans-ui text-xs font-bold uppercase tracking-wider text-[#8E3B2B] mb-3">
-            BENCHMARKS & METRICS // 权威评测跑分与基准指标
+            BENCHMARKS & METRICS // 权威评测跑分与基准指标分析
           </h3>
           <div class="bg-[#FFFDF9] border border-[#D5CEBF] p-6 shadow-xs">
-            <div class="font-mono-ui text-xs sm:text-sm text-[#1A1815] leading-relaxed divide-y divide-[#EAE5D9]">
-              ${(model.benchmarks || '权威评测认证中').split('|').map(b => `
-                <div class="py-2.5 flex items-start space-x-2">
-                  <span class="text-[#8E3B2B] font-bold">▪</span>
-                  <span>${b.trim()}</span>
-                </div>
-              `).join('')}
+            <div class="divide-y divide-[#EAE5D9]">
+              ${renderBenchmarkMeters(model.benchmarks)}
             </div>
           </div>
         </div>
